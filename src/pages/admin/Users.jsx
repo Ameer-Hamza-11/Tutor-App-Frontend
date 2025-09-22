@@ -22,14 +22,18 @@ const Users = ({ theme }) => {
           animate={{ rotate: 360 }}
           transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
           className="w-10 h-10 border-4 border-t-transparent rounded-full"
-          style={{ borderColor: theme === "light" ? "#f97316" : "#fbbf24" }}
+          style={{ borderColor: theme === "light" ? "#f97316" : "#fb923c" }}
         />
       </div>
     );
   }
 
   if (isError) {
-    return <p className={`text-center py-20 ${theme === "light" ? "text-red-600" : "text-red-400"}`}>Failed to load users.</p>;
+    return (
+      <p className={`text-center py-20 ${theme === "light" ? "text-red-600" : "text-red-400"}`}>
+        Failed to load users.
+      </p>
+    );
   }
 
   return (
@@ -38,7 +42,7 @@ const Users = ({ theme }) => {
 
       {/* Desktop Table */}
       <div className="overflow-x-auto hidden md:block">
-        <table className={`min-w-full border-collapse rounded-lg overflow-hidden shadow-lg ${theme === "light" ? "bg-white" : "bg-gray-800"}`}>
+        <table className={`min-w-full border-collapse rounded-lg overflow-hidden shadow-lg transition ${theme === "light" ? "bg-white" : "bg-gray-900"}`}>
           <thead>
             <tr className={`${theme === "light" ? "bg-orange-50 text-orange-700" : "bg-gray-700 text-gray-200"}`}>
               <th className="py-2 px-4 text-left">Name</th>
@@ -55,7 +59,7 @@ const Users = ({ theme }) => {
               <tr
                 key={user.User_Id}
                 className={`transition hover:scale-[1.02] hover:shadow-md cursor-pointer ${
-                  theme === "light" ? "border-t border-orange-200" : "border-t border-gray-700"
+                  theme === "light" ? "border-t border-orange-200 bg-gray-800 text-gray-100" : "border-t border-gray-900 bg-gray-100 text-gray-800"
                 }`}
               >
                 <td className="py-2 px-4">{user.First_Name} {user.Last_Name}</td>
@@ -149,7 +153,9 @@ const Users = ({ theme }) => {
         <button
           disabled={page === 1}
           onClick={() => setPage((old) => Math.max(old - 1, 1))}
-          className="px-4 py-2 rounded bg-gray-300 hover:bg-gray-400 disabled:opacity-50 transition"
+          className={`px-4 py-2 rounded transition ${
+            theme === "light" ? "bg-orange-200 hover:bg-orange-300" : "bg-gray-700 hover:bg-gray-600"
+          } disabled:opacity-50`}
         >
           Prev
         </button>
@@ -161,7 +167,9 @@ const Users = ({ theme }) => {
         <button
           disabled={page === data?.totalPages}
           onClick={() => setPage((old) => old + 1)}
-          className="px-4 py-2 rounded bg-gray-300 hover:bg-gray-400 disabled:opacity-50 transition"
+          className={`px-4 py-2 rounded transition ${
+            theme === "light" ? "bg-orange-200 hover:bg-orange-300" : "bg-gray-700 hover:bg-gray-600"
+          } disabled:opacity-50`}
         >
           Next
         </button>
