@@ -10,7 +10,7 @@ const AdminDashboard = () => {
     {
       id: 1,
       title: "Total Users",
-      value: users?.length || 0,
+      value: users?.data?.length || 0,
       icon: <Users className="w-6 h-6" />,
       light: "from-blue-500 to-blue-600 border-blue-400",
       dark: "from-blue-700 to-blue-900 border-blue-600",
@@ -54,7 +54,7 @@ const AdminDashboard = () => {
     <div className="space-y-10">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-extrabold text-gray-900 dark:text-white">
+        <h1 className={`"text-3xl font-extrabold text-gray-900 dark:text-white`}>
           Admin Dashboard
         </h1>
         <p className="text-gray-600 dark:text-gray-400">
@@ -64,7 +64,7 @@ const AdminDashboard = () => {
 
       {/* Stats Grid */}
       <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
-        {stats.map((item, index) => (
+        {stats?.map((item, index) => (
           <motion.div
             key={item.id}
             initial={{ opacity: 0, y: 40 }}
@@ -117,10 +117,10 @@ const AdminDashboard = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4, delay: index * 0.1 }}
               whileHover={{ scale: 1.02 }}
-              className={`rounded-2xl shadow-lg p-4 border ${
+              className={`rounded-2xl shadow-md p-4 border transition-colors ${
                 theme === "light"
-                  ? "bg-white border-gray-200 text-gray-800"
-                  : "bg-gray-900 border-gray-700 text-gray-300"
+                  ? "bg-white border-orange-200 text-gray-800 hover:border-orange-400"
+                  : "bg-gray-900 border-orange-700 text-gray-300 hover:border-orange-500"
               }`}
             >
               {activity}

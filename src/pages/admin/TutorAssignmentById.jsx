@@ -1,19 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { useParams, useOutletContext } from "react-router-dom";
+import { useParams, useOutletContext, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import {
-  CalendarDays,
-  User,
-  BookOpen,
-  Mail,
-  Phone,
-  Clock,
-} from "lucide-react";
+import { CalendarDays, User, BookOpen, Mail, Phone, Clock, ArrowLeft } from "lucide-react";
 import { getTutorAssignmentById } from "../../apis/jobrequestsApi";
 
 const TutorAssignmentById = () => {
   const { id } = useParams();
-  const { theme, toggleTheme } = useOutletContext(); // ✅ Theme context
+  const { theme } = useOutletContext(); // Theme context
+  const navigate = useNavigate();
   const [assignment, setAssignment] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -37,7 +31,7 @@ const TutorAssignmentById = () => {
         <motion.div
           animate={{ rotate: [0, 360] }}
           transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
-          className="w-12 h-12 border-4 border-indigo-500 border-t-transparent rounded-full"
+          className="w-12 h-12 border-4 border-orange-500 border-t-transparent rounded-full"
         />
       </div>
     );
@@ -45,40 +39,28 @@ const TutorAssignmentById = () => {
 
   if (!assignment) {
     return (
-      <p
-        className={`text-center py-20 ${
-          theme === "light" ? "text-red-600" : "text-red-400"
-        }`}
-      >
+      <p className={`text-center py-20 ${theme === "light" ? "text-red-600" : "text-red-400"}`}>
         No assignment found ❌
       </p>
     );
   }
 
   return (
-    <div
-      className={`min-h-screen p-6 transition ${
-        theme === "light"
-          ? "bg-gray-50 text-gray-900"
-          : "bg-[#0e0c1c] text-gray-200"
-      }`}
-    >
-      {/* Header with theme toggle */}
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl sm:text-3xl font-extrabold">
-          Assignment Details
-        </h1>
-        <button
-          onClick={toggleTheme}
-          className={`px-4 py-2 rounded-lg font-medium shadow-md transition ${
-            theme === "light"
-              ? "bg-gray-800 text-white hover:bg-gray-700"
-              : "bg-gray-200 text-gray-800 hover:bg-gray-300"
-          }`}
-        >
-          {theme === "light" ? "Dark Mode 🌙" : "Light Mode ☀️"}
-        </button>
-      </div>
+    <div className={`min-h-screen p-6 transition ${theme === "light" ? "bg-gray-50 text-gray-900" : "bg-gray-900 text-gray-100"}`}>
+      {/* Back Button */}
+      <button
+        onClick={() => navigate(-1)}
+        className={`flex items-center gap-2 mb-4 px-4 py-2 rounded-lg font-medium shadow-md transition ${
+          theme === "light"
+            ? "bg-orange-100 text-orange-700 hover:bg-orange-200"
+            : "bg-gray-700 text-orange-300 hover:bg-gray-600"
+        }`}
+      >
+        <ArrowLeft size={18} /> Back
+      </button>
+
+      {/* Header */}
+      <h1 className="text-2xl sm:text-3xl font-extrabold mb-6">Assignment Details</h1>
 
       <motion.div
         initial={{ opacity: 0, y: 30 }}
@@ -86,16 +68,16 @@ const TutorAssignmentById = () => {
         transition={{ duration: 0.4, ease: "easeOut" }}
         className={`rounded-2xl shadow-lg overflow-hidden transition ${
           theme === "light"
-            ? "bg-white border border-gray-200"
-            : "bg-gray-900 border border-gray-700"
+            ? "bg-white border border-orange-200 hover:shadow-xl"
+            : "bg-gray-800 border border-gray-700 hover:shadow-orange-500/20"
         }`}
       >
         {/* Header */}
-        <div className="bg-gradient-to-r from-indigo-600 to-purple-600 p-6">
+        <div className="bg-gradient-to-r from-orange-500 to-orange-600 p-6">
           <h2 className="text-2xl font-bold text-white flex items-center gap-2">
             <BookOpen size={22} /> {assignment.job.Title}
           </h2>
-          <p className="text-sm text-indigo-100">{assignment.job.Description}</p>
+          <p className="text-sm text-orange-100">{assignment.job.Description}</p>
         </div>
 
         {/* Content */}
@@ -109,17 +91,14 @@ const TutorAssignmentById = () => {
             <p className="flex items-center gap-2">
               <CalendarDays size={18} /> Frequency: {assignment.job.Frequency}
             </p>
-            <p className="flex items-center gap-2">
-              💰 Fee: Rs. {assignment.job.Fee}
-            </p>
+            <p className="flex items-center gap-2">💰 Fee: Rs. {assignment.job.Fee}</p>
           </div>
 
           {/* Tutor Info */}
           <div className="space-y-3">
             <h3 className="text-lg font-semibold">Tutor Info</h3>
             <p className="flex items-center gap-2">
-              <User size={18} /> {assignment.tutor.First_Name}{" "}
-              {assignment.tutor.Last_Name}
+              <User size={18} /> {assignment.tutor.First_Name} {assignment.tutor.Last_Name}
             </p>
             <p className="flex items-center gap-2">
               <Mail size={18} /> {assignment.tutor.Email}
@@ -133,8 +112,7 @@ const TutorAssignmentById = () => {
           <div className="space-y-3">
             <h3 className="text-lg font-semibold">Student Info</h3>
             <p className="flex items-center gap-2">
-              <User size={18} /> {assignment.student.First_Name}{" "}
-              {assignment.student.Last_Name}
+              <User size={18} /> {assignment.student.First_Name} {assignment.student.Last_Name}
             </p>
             <p className="flex items-center gap-2">
               <Mail size={18} /> {assignment.student.Email}
@@ -156,12 +134,8 @@ const TutorAssignmentById = () => {
             >
               {assignment.assignmentStatus.Description}
             </p>
-            <p>
-              Start: {new Date(assignment.Start_Date).toLocaleDateString()}
-            </p>
-            <p>
-              End: {new Date(assignment.End_Date).toLocaleDateString()}
-            </p>
+            <p>Start: {new Date(assignment.Start_Date).toLocaleDateString()}</p>
+            <p>End: {new Date(assignment.End_Date).toLocaleDateString()}</p>
           </div>
         </div>
       </motion.div>

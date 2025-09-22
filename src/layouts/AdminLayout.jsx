@@ -17,10 +17,11 @@ import {
 import { useQuery } from "@tanstack/react-query";
 import { fetchUsers } from "../apis/fetchApi";
 import { getAllDemoSchedules, getAllJobRequestApi } from "../apis/jobrequestsApi";
+import { useTheme } from "../context/ThemeProvider";
 
 const AdminLayout = () => {
   const [isOpen, setIsOpen] = useState(true);
-  const [theme, setTheme] = useState("light");
+  const { theme, toggleTheme } = useTheme();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -31,8 +32,6 @@ const AdminLayout = () => {
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
-
-  const toggleTheme = () => setTheme(theme === "light" ? "dark" : "light");
 
   // ✅ React Query Data
   const { data: users = [] } = useQuery({
@@ -62,22 +61,20 @@ const AdminLayout = () => {
 
   return (
     <div
-      className={`flex h-screen ${
-        theme === "light"
-          ? "bg-gray-100 text-black"
-          : "bg-gray-900 text-gray-200"
-      }`}
+      className={`flex h-screen ${theme === "light"
+        ? "bg-gray-100 text-black"
+        : "bg-gray-900 text-gray-200"
+        }`}
     >
       {/* Sidebar */}
       <motion.aside
         initial={{ x: -250 }}
         animate={{ x: isOpen ? 0 : -250 }}
         transition={{ duration: 0.3 }}
-        className={`${
-          theme === "light"
-            ? "bg-orange-500"
-            : "bg-gray-800"
-        } text-white w-64 flex flex-col shadow-xl fixed h-full z-20`}
+        className={`${theme === "light"
+          ? "bg-orange-500"
+          : "bg-gray-800"
+          } text-white w-64 flex flex-col shadow-xl fixed h-full z-20`}
       >
         <div className="flex items-center justify-between px-6 py-4 border-b border-white/20">
           <h1 className="text-xl font-bold">Admin Panel</h1>
@@ -132,11 +129,10 @@ const AdminLayout = () => {
           </button>
           <NavLink
             to="/app/logout"
-            className={`flex items-center gap-3 w-full px-4 py-2 rounded-xl hover:bg-gray-500 transition ${
-              theme === "light"
-                ? "text-black bg-gray-100 hover:bg-gray-200"
-                : "text-white bg-gray-700 hover:bg-gray-600"
-            }`}
+            className={`flex items-center gap-3 w-full px-4 py-2 rounded-xl hover:bg-gray-500 transition ${theme === "light"
+              ? "text-black bg-gray-100 hover:bg-gray-200"
+              : "text-white bg-gray-700 hover:bg-gray-600"
+              }`}
           >
             <LogOut size={20} /> Logout
           </NavLink>
@@ -147,11 +143,10 @@ const AdminLayout = () => {
       <div className="flex-1 flex flex-col md:ml-64">
         {/* Topbar */}
         <header
-          className={`flex items-center justify-between px-6 py-4 border-b shadow-sm ${
-            theme === "light"
-              ? "bg-white border-gray-200"
-              : "bg-gray-800 border-gray-700"
-          }`}
+          className={`flex items-center justify-between px-6 py-4 border-b shadow-sm ${theme === "light"
+            ? "bg-white border-gray-200"
+            : "bg-gray-800 border-gray-700"
+            }`}
         >
           <button
             onClick={() => setIsOpen(!isOpen)}
@@ -161,9 +156,8 @@ const AdminLayout = () => {
           </button>
 
           <h2
-            className={`text-lg font-semibold ${
-              theme === "light" ? "text-black" : "text-white"
-            }`}
+            className={`text-lg font-semibold ${theme === "light" ? "text-black" : "text-white"
+              }`}
           >
             Welcome, Admin
           </h2>
@@ -179,9 +173,8 @@ const AdminLayout = () => {
 
         {/* Page Content */}
         <main
-          className={`flex-1 overflow-y-auto p-6 ${
-            theme === "light" ? "bg-gray-50" : "bg-gray-900"
-          }`}
+          className={`flex-1 overflow-y-auto p-6 ${theme === "light" ? "bg-gray-50" : "bg-gray-900"
+            }`}
         >
           <motion.div
             initial={{ opacity: 0, y: 30 }}

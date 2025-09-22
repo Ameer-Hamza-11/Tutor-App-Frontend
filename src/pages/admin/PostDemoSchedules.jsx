@@ -39,11 +39,13 @@ const PostDemoSchedules = ({ isOpen, onClose, requestId, theme }) => {
         initial={{ scale: 0.8, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         exit={{ scale: 0.8, opacity: 0 }}
-        className={`w-full max-w-md rounded-xl p-6 ${
+        className={`w-full max-w-md rounded-xl p-6 shadow-2xl transition ${
           theme === "light" ? "bg-white text-gray-900" : "bg-gray-900 text-gray-100"
-        } shadow-2xl`}
+        }`}
       >
-        <h2 className="text-2xl font-bold mb-4 text-center">Schedule Demo</h2>
+        <h2 className={`text-2xl font-bold mb-4 text-center ${theme === "light" ? "text-orange-600" : "text-orange-400"}`}>
+          Schedule Demo
+        </h2>
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <label className="flex flex-col text-sm font-medium">
@@ -53,22 +55,22 @@ const PostDemoSchedules = ({ isOpen, onClose, requestId, theme }) => {
               value={scheduledDate}
               onChange={(e) => setScheduledDate(e.target.value)}
               required
-              className={`mt-1 px-3 py-2 rounded-lg border focus:outline-none focus:ring-2 focus:ring-indigo-500 ${
-                theme === "light" ? "border-gray-300 bg-white text-gray-900" : "border-gray-700 bg-gray-800 text-gray-100"
+              className={`mt-1 px-3 py-2 rounded-lg border focus:outline-none focus:ring-2 focus:ring-orange-500 transition ${
+                theme === "light" ? "border-orange-300 bg-white text-gray-900" : "border-orange-600 bg-gray-800 text-white"
               }`}
             />
           </label>
 
           {errorMsg && <p className="text-red-500 text-sm">{errorMsg}</p>}
 
-          <div className="flex gap-3 mt-2">
+          <div className="flex flex-col sm:flex-row gap-3 mt-2">
             <button
               type="submit"
               disabled={mutation.isLoading}
               className={`flex-1 px-4 py-2 rounded-lg font-semibold text-white transition ${
                 theme === "light"
-                  ? "bg-green-500 hover:bg-green-600 disabled:bg-green-300"
-                  : "bg-green-600 hover:bg-green-700 disabled:bg-green-800"
+                  ? "bg-orange-500 hover:bg-orange-600 disabled:bg-orange-300"
+                  : "bg-orange-400 hover:bg-orange-500 disabled:bg-orange-600"
               }`}
             >
               {mutation.isLoading ? "Scheduling..." : "Schedule"}
@@ -77,7 +79,7 @@ const PostDemoSchedules = ({ isOpen, onClose, requestId, theme }) => {
               type="button"
               onClick={onClose}
               className={`flex-1 px-4 py-2 rounded-lg font-semibold text-white transition ${
-                theme === "light" ? "bg-red-500 hover:bg-red-600" : "bg-red-600 hover:bg-red-700"
+                theme === "light" ? "bg-gray-400 hover:bg-gray-500" : "bg-gray-700 hover:bg-gray-600"
               }`}
             >
               Cancel
