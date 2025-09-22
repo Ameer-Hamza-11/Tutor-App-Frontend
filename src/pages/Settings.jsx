@@ -8,21 +8,48 @@ import DangerZone from "./settings/DangerZone";
 
 const Settings = () => {
   const { theme } = useTheme();
+  const isLight = theme === "light";
   const [openSection, setOpenSection] = useState(null);
 
   const toggleSection = (section) => {
     setOpenSection(openSection === section ? null : section);
   };
 
+  const sections = [
+    {
+      id: "profile",
+      title: "Edit Profile",
+      desc: "Update your personal details.",
+      form: <EditProfileForm />,
+    },
+    {
+      id: "role",
+      title: "Change Role",
+      desc: "Switch between Student or Tutor role.",
+      form: <ChangeRoleForm />,
+    },
+    {
+      id: "password",
+      title: "Change Password",
+      desc: "Update your login credentials securely.",
+      form: <ChangePasswordForm />,
+    },
+    {
+      id: "danger",
+      title: "Danger Zone",
+      desc: "Manage account risks.",
+      form: <DangerZone />,
+      danger: true,
+    },
+  ];
+
   return (
     <div
-      className={`min-h-screen px-6 py-10 transition-colors duration-500
-        ${
-          theme === "light"
-            ? "bg-gray-50 text-gray-900"
-            : "bg-gradient-to-br from-gray-900 via-black to-gray-950 text-gray-100"
-        }
-      `}
+      className={`min-h-screen px-6 py-10 transition-colors duration-500 ${
+        isLight
+          ? "bg-orange-50 text-gray-900"
+          : "bg-gradient-to-br from-gray-900 via-black to-gray-950 text-gray-100"
+      }`}
     >
       <motion.div
         initial={{ opacity: 0, y: -30 }}
@@ -32,57 +59,31 @@ const Settings = () => {
       >
         <h1
           className={`text-3xl font-bold mb-6 ${
-            theme === "light" ? "text-orange-600" : "text-orange-400"
+            isLight ? "text-orange-600" : "text-orange-400"
           }`}
         >
           ⚙️ Settings
         </h1>
 
-        {/* Section Reusable Card Style */}
-        {[
-          {
-            id: "profile",
-            title: "Edit Profile",
-            desc: "Update your personal details.",
-            form: <EditProfileForm />,
-          },
-          {
-            id: "role",
-            title: "Change Role",
-            desc: "Switch between Student or Tutor role.",
-            form: <ChangeRoleForm />,
-          },
-          {
-            id: "password",
-            title: "Change Password",
-            desc: "Update your login credentials securely.",
-            form: <ChangePasswordForm />,
-          },
-          {
-            id: "danger",
-            title: "Danger Zone",
-            desc: "Manage account risks.",
-            form: <DangerZone />,
-            danger: true,
-          },
-        ].map((section) => (
+        {sections.map((section) => (
           <section
             key={section.id}
-            className={`p-6 rounded-xl shadow-lg border transition-all duration-300 cursor-pointer
-              ${
-                theme === "light"
-                  ? "bg-white border-gray-200 hover:border-orange-400"
-                  : "bg-gray-900/60 border-gray-700 hover:border-orange-400/70"
-              }
-            `}
-            onClick={() => toggleSection(section.id)}
+            className={`p-6 rounded-xl shadow-lg border transition-all duration-300
+              ${isLight
+                ? "bg-white border-orange-200 hover:border-orange-400 hover:shadow-xl"
+                : "bg-gray-900/60 border-gray-700 hover:border-orange-400/70 hover:shadow-lg"
+              }`}
           >
-            <div>
+            {/* Header */}
+            <div
+              className="cursor-pointer"
+              onClick={() => toggleSection(section.id)}
+            >
               <h2
                 className={`text-xl font-semibold flex items-center justify-between ${
                   section.danger
                     ? "text-red-600 dark:text-red-400"
-                    : theme === "light"
+                    : isLight
                     ? "text-gray-900"
                     : "text-gray-100"
                 }`}
@@ -98,9 +99,16 @@ const Settings = () => {
                   {openSection === section.id ? "▲" : "▼"}
                 </span>
               </h2>
-              <p className="text-sm text-gray-500 mt-1">{section.desc}</p>
+              <p
+                className={`text-sm mt-1 ${
+                  isLight ? "text-gray-600" : "text-gray-400"
+                }`}
+              >
+                {section.desc}
+              </p>
             </div>
 
+            {/* Form */}
             <AnimatePresence>
               {openSection === section.id && (
                 <motion.div
@@ -109,6 +117,7 @@ const Settings = () => {
                   exit={{ opacity: 0, height: 0 }}
                   transition={{ duration: 0.4 }}
                   className="mt-4 overflow-hidden"
+                  onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside form
                 >
                   {section.form}
                 </motion.div>

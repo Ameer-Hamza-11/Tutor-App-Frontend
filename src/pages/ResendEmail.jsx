@@ -8,7 +8,8 @@ import { useTheme } from "../context/ThemeProvider"; // ✅ theme hook
 const ResendEmail = () => {
   const [email, setEmail] = useState("");
   const navigate = useNavigate();
-  const { theme } = useTheme(); // ✅ theme context
+  const { theme } = useTheme();
+  const isLight = theme === "light";
 
   const mutation = useMutation({
     mutationFn: (email) => resendEmailApi(email),
@@ -23,31 +24,38 @@ const ResendEmail = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!email) {
-      alert("Please enter your email");
-      return;
-    }
+    if (!email) return alert("Please enter your email");
     mutation.mutate(email);
   };
 
+  const bgGradient = isLight
+    ? "bg-gradient-to-br from-orange-50 via-orange-100 to-orange-200 text-gray-900"
+    : "bg-gradient-to-br from-gray-900 via-black to-gray-950 text-gray-100";
+
+  const cardStyle = isLight
+    ? "bg-white border border-orange-200"
+    : "bg-gray-900/60 border border-orange-500";
+
+  const inputBg = isLight ? "bg-gray-100 text-gray-900" : "bg-gray-800/40 text-white";
+
   return (
-    <div
-      className={`flex items-center justify-center min-h-screen px-4 transition-colors duration-500
-        ${theme === "light"
-          ? "bg-gray-50 text-gray-900"
-          : "bg-gradient-to-br from-blue-900 via-indigo-800 to-purple-900 text-white"
-        }`}
-    >
+    <div className={`flex items-center justify-center min-h-screen px-4 transition-colors duration-500 ${bgGradient}`}>
       <motion.div
         initial={{ opacity: 0, y: -50 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
-        className={`w-full max-w-md p-8 rounded-2xl shadow-lg text-center transition-colors duration-500
-          ${theme === "light" ? "bg-white border border-gray-200" : "bg-indigo-950"}
-        `}
+        className={`w-full max-w-md p-8 rounded-2xl shadow-2xl text-center transition-colors duration-500 ${cardStyle}`}
       >
-        <h2 className="text-2xl font-bold mb-6">Resend Verification Email</h2>
-        <p className="mb-6 text-sm text-gray-400">
+        <h2
+          className={`text-3xl font-extrabold mb-4 ${
+            isLight
+              ? "text-orange-600"
+              : "bg-gradient-to-r from-orange-400 to-red-500 bg-clip-text text-transparent"
+          }`}
+        >
+          Resend Verification Email
+        </h2>
+        <p className={`mb-6 text-sm ${isLight ? "text-gray-600" : "text-gray-300"}`}>
           Enter your registered email to receive a new OTP.
         </p>
 
@@ -58,11 +66,8 @@ const ResendEmail = () => {
             placeholder="Enter your email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className={`w-full px-4 py-2 rounded-lg outline-none border-2 transition-colors
-              ${theme === "light"
-                ? "bg-gray-100 text-gray-900 border-gray-200 focus:border-blue-500"
-                : "bg-indigo-800 text-white border-transparent focus:border-blue-500"}
-            `}
+            className={`w-full px-4 py-2 rounded-lg outline-none border-2 transition-colors ${inputBg} border-transparent focus:border-orange-500`}
+            required
           />
 
           {/* Submit Button */}
@@ -71,7 +76,7 @@ const ResendEmail = () => {
             whileTap={{ scale: 0.95 }}
             type="submit"
             disabled={mutation.isPending}
-            className="w-full py-2 rounded-lg bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 font-semibold text-white"
+            className="w-full py-2 rounded-lg bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 font-semibold text-white shadow-md"
           >
             {mutation.isPending ? "Sending..." : "Resend Email"}
           </motion.button>

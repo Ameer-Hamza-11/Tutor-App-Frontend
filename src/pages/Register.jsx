@@ -4,11 +4,12 @@ import { User, Mail, Phone, Lock, Eye, EyeOff } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
 import { registerApi } from "../apis/authApi";
-import { useTheme } from "../context/ThemeProvider"; // ✅ theme hook
+import { useTheme } from "../context/ThemeProvider";
 
 const Register = () => {
   const navigate = useNavigate();
-  const { theme } = useTheme(); // ✅ theme context
+  const { theme } = useTheme();
+  const isLight = theme === "light";
 
   const [formData, setFormData] = useState({
     User_Name: "",
@@ -24,18 +25,14 @@ const Register = () => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const mutation = useMutation({
     mutationFn: () => registerApi(formData),
-    onSuccess: (data) => {
+    onSuccess: () => {
       alert("Registered Successfully");
       navigate("/verifyOtp");
-      console.log(data);
     },
     onError: (err) => {
       alert(err.message || "Registration failed");
@@ -52,42 +49,42 @@ const Register = () => {
     mutation.mutate(formData);
   };
 
+  const bgGradient = isLight
+    ? "bg-gradient-to-br from-orange-50 via-orange-100 to-orange-200 text-gray-900"
+    : "bg-gradient-to-br from-gray-900 via-black to-gray-950 text-gray-100";
+
+  const cardStyle = isLight
+    ? "bg-white border border-orange-200 focus-within:ring-orange-400"
+    : "bg-gray-900/60 border border-orange-500 focus-within:ring-orange-400";
+
+  const inputBg = isLight ? "bg-gray-100" : "bg-gray-800/40";
+
   return (
     <div
-      className={`flex items-center justify-center min-h-screen px-4 transition-colors duration-500
-        ${theme === "light"
-          ? "bg-gray-50 text-gray-900"
-          : "bg-gradient-to-br from-purple-900 via-purple-800 to-pink-900 text-white"
-        }`}
+      className={`flex items-center justify-center min-h-screen px-4 transition-colors duration-500 ${bgGradient}`}
     >
       <motion.div
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.5 }}
-        className={`w-full max-w-md p-8 rounded-2xl shadow-2xl relative transition-colors duration-500
-          ${theme === "light"
-            ? "bg-white border border-gray-200"
-            : "bg-purple-950/40 backdrop-blur-xl border border-purple-600/40"}
-        `}
+        className={`w-full max-w-md p-8 rounded-2xl shadow-2xl relative transition-colors duration-500 ${cardStyle}`}
       >
         <h2
-          className={`text-3xl font-extrabold mb-6 text-center
-            ${theme === "light"
-              ? "text-gray-800"
-              : "bg-gradient-to-r from-pink-400 to-purple-300 bg-clip-text text-transparent"}
-          `}
+          className={`text-3xl font-extrabold mb-6 text-center ${
+            isLight
+              ? "text-orange-600"
+              : "bg-gradient-to-r from-orange-400 to-red-500 bg-clip-text text-transparent"
+          }`}
         >
           Create Account
         </h2>
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          {/* User_Name */}
+          {/* User Name */}
           <div
-            className={`flex items-center rounded-lg px-3 transition-colors focus-within:ring-2 focus-within:ring-pink-400
-              ${theme === "light" ? "bg-gray-100" : "bg-purple-800/40"}
-            `}
+            className={`flex items-center rounded-lg px-3 transition-colors focus-within:ring-2 ${inputBg}`}
           >
-            <User className="text-pink-400 mr-2" />
+            <User className="text-orange-400 mr-2" />
             <input
               type="text"
               name="User_Name"
@@ -101,11 +98,9 @@ const Register = () => {
 
           {/* First Name */}
           <div
-            className={`flex items-center rounded-lg px-3 transition-colors focus-within:ring-2 focus-within:ring-pink-400
-              ${theme === "light" ? "bg-gray-100" : "bg-purple-800/40"}
-            `}
+            className={`flex items-center rounded-lg px-3 transition-colors focus-within:ring-2 ${inputBg}`}
           >
-            <User className="text-pink-400 mr-2" />
+            <User className="text-orange-400 mr-2" />
             <input
               type="text"
               name="First_Name"
@@ -119,11 +114,9 @@ const Register = () => {
 
           {/* Last Name */}
           <div
-            className={`flex items-center rounded-lg px-3 transition-colors focus-within:ring-2 focus-within:ring-pink-400
-              ${theme === "light" ? "bg-gray-100" : "bg-purple-800/40"}
-            `}
+            className={`flex items-center rounded-lg px-3 transition-colors focus-within:ring-2 ${inputBg}`}
           >
-            <User className="text-pink-400 mr-2" />
+            <User className="text-orange-400 mr-2" />
             <input
               type="text"
               name="Last_Name"
@@ -137,13 +130,11 @@ const Register = () => {
 
           {/* Email */}
           <div
-            className={`flex items-center rounded-lg px-3 transition-colors focus-within:ring-2 focus-within:ring-pink-400
-              ${theme === "light" ? "bg-gray-100" : "bg-purple-800/40"}
-            `}
+            className={`flex items-center rounded-lg px-3 transition-colors focus-within:ring-2 ${inputBg}`}
           >
-            <Mail className="text-pink-400 mr-2" />
+            <Mail className="text-orange-400 mr-2" />
             <input
-              type="Email"
+              type="email"
               name="Email"
               placeholder="Email"
               value={formData.Email}
@@ -155,11 +146,9 @@ const Register = () => {
 
           {/* Phone */}
           <div
-            className={`flex items-center rounded-lg px-3 transition-colors focus-within:ring-2 focus-within:ring-pink-400
-              ${theme === "light" ? "bg-gray-100" : "bg-purple-800/40"}
-            `}
+            className={`flex items-center rounded-lg px-3 transition-colors focus-within:ring-2 ${inputBg}`}
           >
-            <Phone className="text-pink-400 mr-2" />
+            <Phone className="text-orange-400 mr-2" />
             <input
               type="text"
               name="Phone_Number"
@@ -173,13 +162,11 @@ const Register = () => {
 
           {/* Password */}
           <div
-            className={`flex items-center rounded-lg px-3 relative transition-colors focus-within:ring-2 focus-within:ring-pink-400
-              ${theme === "light" ? "bg-gray-100" : "bg-purple-800/40"}
-            `}
+            className={`flex items-center rounded-lg px-3 relative transition-colors focus-within:ring-2 ${inputBg}`}
           >
-            <Lock className="text-pink-400 mr-2" />
+            <Lock className="text-orange-400 mr-2" />
             <input
-              type={showPassword ? "text" : "Password"}
+              type={showPassword ? "text" : "password"}
               name="Password"
               placeholder="Password"
               value={formData.Password}
@@ -190,7 +177,7 @@ const Register = () => {
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-3 text-pink-400"
+              className="absolute right-3 text-orange-400"
             >
               {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
             </button>
@@ -202,7 +189,11 @@ const Register = () => {
             whileTap={{ scale: 0.95 }}
             type="submit"
             disabled={mutation.isPending}
-            className="w-full py-2 mt-4 rounded-lg bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 font-semibold text-white shadow-md"
+            className={`w-full py-2 mt-4 rounded-lg font-semibold shadow-md text-white ${
+              isLight
+                ? "bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600"
+                : "bg-gradient-to-r from-orange-400 to-orange-600 hover:from-orange-500 hover:to-orange-700"
+            }`}
           >
             {mutation.isPending ? "Registering..." : "Register"}
           </motion.button>
@@ -212,7 +203,7 @@ const Register = () => {
           Already have an account?{" "}
           <Link
             to="/login"
-            className="text-pink-400 hover:text-pink-300 font-semibold"
+            className="font-semibold text-orange-500 hover:text-orange-400"
           >
             Login
           </Link>

@@ -20,6 +20,8 @@ const Navigation = () => {
   const { theme, toggleTheme } = useTheme();
   const user = useSelector((state) => state.auth.user);
 
+  const isLight = theme === "light";
+
   let links = [
     { name: "Dashboard", path: "/app", icon: <Home size={20} /> },
     { name: "Courses", path: "/app/courses", icon: <BookOpen size={20} /> },
@@ -35,26 +37,24 @@ const Navigation = () => {
     return !link.roles || link.roles.includes(user.role);
   });
 
-  const sidebarBase =
-    theme === "light"
-      ? "bg-white text-gray-900 border-r border-gray-200"
-      : "bg-[#121022] text-gray-100 border-r border-gray-800";
+  const sidebarBase = isLight
+    ? "bg-orange-50 text-gray-900 border-r border-orange-200"
+    : "bg-gray-900 text-gray-100 border-r border-gray-700";
 
-  // ✅ Active Link Styles with Orange Theme
-  const activeLink =
-    theme === "light"
-      ? "bg-orange-500 text-white shadow-md"
-      : "bg-gradient-to-r from-orange-500 to-red-500 text-white shadow-lg";
+  const activeLink = isLight
+    ? "bg-orange-500 text-white shadow-md"
+    : "bg-gradient-to-r from-orange-500 to-red-500 text-white shadow-lg";
 
-  const hoverLink =
-    theme === "light" ? "hover:bg-orange-50" : "hover:bg-[#1e1c2e]";
+  const hoverLink = isLight
+    ? "hover:bg-orange-100 hover:shadow-sm"
+    : "hover:bg-gray-800 hover:shadow-sm";
 
   return (
     <>
       {/* Mobile Toggle Button */}
       <button
-        className={`md:hidden fixed top-4 left-4 z-50 ${
-          theme === "light" ? "text-gray-900" : "text-white"
+        className={`md:hidden fixed top-4 left-4 z-50 p-2 rounded-md transition ${
+          isLight ? "text-gray-900 bg-orange-50" : "text-white bg-gray-900"
         }`}
         onClick={() => setIsOpen(true)}
       >
@@ -62,10 +62,7 @@ const Navigation = () => {
       </button>
 
       {/* Desktop Sidebar */}
-      <div
-        className={`hidden md:flex h-screen w-64 flex-col p-4 transition-colors duration-300 ${sidebarBase}`}
-      >
-        {/* Logo */}
+      <div className={`hidden md:flex h-screen w-64 flex-col p-4 transition-colors duration-300 ${sidebarBase}`}>
         <motion.h1
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
@@ -75,7 +72,6 @@ const Navigation = () => {
           Tutor App
         </motion.h1>
 
-        {/* Links */}
         <nav className="flex flex-col gap-2 flex-1">
           {links.map((link, index) => (
             <motion.div
@@ -100,19 +96,18 @@ const Navigation = () => {
           ))}
         </nav>
 
-        {/* Theme Toggle */}
         <motion.button
-          whileTap={{ scale: 0.9 }}
+          whileTap={{ scale: 0.95 }}
           onClick={toggleTheme}
-          className="mt-6 flex items-center justify-center gap-2 px-4 py-2 rounded-lg border transition-all duration-300 
+          className="mt-6 flex items-center justify-center gap-2 px-4 py-2 rounded-lg border transition-all duration-300
             bg-gradient-to-r from-orange-500 to-red-500 text-white shadow-md hover:shadow-lg"
         >
-          {theme === "light" ? <Moon size={18} /> : <Sun size={18} />}
-          {theme === "light" ? "Dark Mode" : "Light Mode"}
+          {isLight ? <Moon size={18} /> : <Sun size={18} />}
+          {isLight ? "Dark Mode" : "Light Mode"}
         </motion.button>
       </div>
 
-      {/* Mobile Sidebar with Framer Motion */}
+      {/* Mobile Sidebar */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
@@ -122,17 +117,13 @@ const Navigation = () => {
             transition={{ duration: 0.3 }}
             className={`fixed top-0 left-0 h-screen w-64 flex flex-col p-4 z-40 ${sidebarBase}`}
           >
-            {/* Close Button */}
             <button
-              className={`self-end mb-6 ${
-                theme === "light" ? "text-gray-900" : "text-white"
-              }`}
+              className={`self-end mb-6 text-xl ${isLight ? "text-gray-900" : "text-white"}`}
               onClick={() => setIsOpen(false)}
             >
               <X size={24} />
             </button>
 
-            {/* Logo */}
             <motion.h1
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
@@ -142,7 +133,6 @@ const Navigation = () => {
               Tutor App
             </motion.h1>
 
-            {/* Links */}
             <nav className="flex flex-col gap-2 flex-1">
               {links.map((link, index) => (
                 <motion.div
@@ -168,15 +158,14 @@ const Navigation = () => {
               ))}
             </nav>
 
-            {/* Theme Toggle */}
             <motion.button
-              whileTap={{ scale: 0.9 }}
+              whileTap={{ scale: 0.95 }}
               onClick={toggleTheme}
-              className="mt-6 flex items-center justify-center gap-2 px-4 py-2 rounded-lg border transition-all duration-300 
+              className="mt-6 flex items-center justify-center gap-2 px-4 py-2 rounded-lg border transition-all duration-300
                 bg-gradient-to-r from-orange-500 to-red-500 text-white shadow-md hover:shadow-lg"
             >
-              {theme === "light" ? <Moon size={18} /> : <Sun size={18} />}
-              {theme === "light" ? "Dark Mode" : "Light Mode"}
+              {isLight ? <Moon size={18} /> : <Sun size={18} />}
+              {isLight ? "Dark Mode" : "Light Mode"}
             </motion.button>
           </motion.div>
         )}

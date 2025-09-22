@@ -7,12 +7,14 @@ import { loginApi } from "../apis/authApi";
 import { useDispatch } from "react-redux";
 import { setToken, setProfile } from "../../store/slices/authSlice";
 import { setAuthToken } from "../apis/client";
-import { useTheme } from "../context/ThemeProvider";  // ✅ import theme hook
+import { useTheme } from "../context/ThemeProvider";
 
 const Login = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { theme } = useTheme(); // ✅ theme context use
+  const { theme } = useTheme();
+  const isLight = theme === "light";
+
   const [formData, setFormData] = useState({ Email: "", Password: "" });
   const [showPassword, setShowPassword] = useState(false);
 
@@ -24,20 +26,14 @@ const Login = () => {
   const mutation = useMutation({
     mutationFn: () => loginApi(formData),
     onSuccess: (data) => {
-      if (!data?.token || !data?.user) {
-        alert("Invalid response from server");
-        return;
-      }
+      if (!data?.token || !data?.user) return alert("Invalid response from server");
+
       dispatch(setToken(data.token));
       setAuthToken(data.token);
       dispatch(setProfile({ user: data.user }));
 
       alert("Login Successful");
-      const role = data.user.role.toLowerCase();
-
-      if (role === "student") navigate("/app");
-      else if (role === "teacher") navigate("/app");
-      else if (role === "admin") navigate("/app");
+      navigate("/app");
     },
     onError: (err) => alert(err.message || "Login failed"),
   });
@@ -45,70 +41,64 @@ const Login = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     const { Email, Password } = formData;
-    if (!Email || !Password) {
-      alert("Fill all the fields");
-      return;
-    }
+    if (!Email || !Password) return alert("Fill all the fields");
+
     mutation.mutate(formData);
   };
 
+  const bgGradient = isLight
+    ? "bg-gradient-to-br from-orange-50 via-orange-100 to-orange-200 text-gray-900"
+    : "bg-gradient-to-br from-gray-900 via-black to-gray-950 text-gray-100";
+
+  const cardStyle = isLight
+    ? "bg-white border border-orange-200 focus-within:ring-orange-400"
+    : "bg-gray-900/60 border border-orange-500 focus-within:ring-orange-400";
+
+  const inputBg = isLight ? "bg-gray-100" : "bg-gray-800/40";
+
   return (
-    <div
-      className={`flex items-center justify-center min-h-screen px-4 transition-colors duration-500
-        ${theme === "light"
-          ? "bg-gray-50 text-gray-900"
-          : "bg-gradient-to-br from-purple-900 via-purple-800 to-pink-900 text-white"
-        }`}
-    >
+    <div className={`flex items-center justify-center min-h-screen px-4 transition-colors duration-500 ${bgGradient}`}>
       <motion.div
         initial={{ opacity: 0, y: -50 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
-        className={`w-full max-w-md p-8 rounded-2xl shadow-lg relative transition-colors duration-500
-          ${theme === "light" ? "bg-white" : "bg-purple-950"}
-        `}
+        className={`w-full max-w-md p-8 rounded-2xl shadow-2xl relative transition-colors duration-500 ${cardStyle}`}
       >
-        <h2 className="text-2xl font-bold mb-6 text-center">Login</h2>
+        <h2 className={`text-3xl font-extrabold mb-6 text-center ${isLight ? "text-orange-600" : "bg-gradient-to-r from-orange-400 to-red-500 bg-clip-text text-transparent"}`}>
+          Login
+        </h2>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Email */}
-          <div
-            className={`flex items-center rounded-lg px-3 transition-colors
-              ${theme === "light" ? "bg-gray-100" : "bg-purple-800"}
-            `}
-          >
-            <Mail className="text-pink-400 mr-2" />
+          <div className={`flex items-center rounded-lg px-3 transition-colors ${inputBg}`}>
+            <Mail className="text-orange-400 mr-2" />
             <input
-              type="Email"
+              type="email"
               name="Email"
               placeholder="Email"
               value={formData.Email}
               onChange={handleChange}
-              className="w-full bg-transparent outline-none py-2"
+              className="w-full bg-transparent outline-none py-2 placeholder-gray-400"
               required
             />
           </div>
 
           {/* Password */}
-          <div
-            className={`flex items-center rounded-lg px-3 relative transition-colors
-              ${theme === "light" ? "bg-gray-100" : "bg-purple-800"}
-            `}
-          >
-            <Lock className="text-pink-400 mr-2" />
+          <div className={`flex items-center rounded-lg px-3 relative transition-colors ${inputBg}`}>
+            <Lock className="text-orange-400 mr-2" />
             <input
-              type={showPassword ? "text" : "Password"}
+              type={showPassword ? "text" : "password"}
               name="Password"
               placeholder="Password"
               value={formData.Password}
               onChange={handleChange}
-              className="w-full bg-transparent outline-none py-2"
+              className="w-full bg-transparent outline-none py-2 placeholder-gray-400"
               required
             />
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-3 text-pink-400"
+              className="absolute right-3 text-orange-400"
             >
               {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
             </button>
@@ -120,7 +110,11 @@ const Login = () => {
             whileTap={{ scale: 0.95 }}
             type="submit"
             disabled={mutation.isPending}
-            className="w-full py-2 mt-4 rounded-lg bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 font-semibold text-white"
+            className={`w-full py-2 mt-4 rounded-lg font-semibold shadow-md text-white ${
+              isLight
+                ? "bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600"
+                : "bg-gradient-to-r from-orange-400 to-orange-600 hover:from-orange-500 hover:to-orange-700"
+            }`}
           >
             {mutation.isPending ? "Logging in..." : "Login"}
           </motion.button>
@@ -128,18 +122,12 @@ const Login = () => {
 
         <p className="text-center text-sm mt-4">
           Don’t have an account?{" "}
-          <Link
-            to="/register"
-            className="text-pink-400 hover:text-pink-300 font-semibold"
-          >
+          <Link className="font-semibold text-orange-500 hover:text-orange-400" to="/register">
             Register
           </Link>
         </p>
         <p className="text-center text-sm mt-2">
-          <Link
-            to="/forgot-password"
-            className="text-pink-400 hover:text-pink-300 font-semibold"
-          >
+          <Link className="font-semibold text-orange-500 hover:text-orange-400" to="/forgot-password">
             Forgot Password?
           </Link>
         </p>
