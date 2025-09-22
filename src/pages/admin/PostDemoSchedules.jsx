@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import { scheduleDemoApi } from "../../apis/jobrequestsApi";
+import toast from "react-hot-toast";
 
 const PostDemoSchedules = ({ isOpen, onClose, requestId, theme }) => {
   const [scheduledDate, setScheduledDate] = useState("");
@@ -13,11 +14,13 @@ const PostDemoSchedules = ({ isOpen, onClose, requestId, theme }) => {
     onSuccess: () => {
       queryClient.invalidateQueries(["jobRequestById", requestId]);
       onClose();
+      toast.success("Demo scheduled successfully");
       setScheduledDate("");
       setErrorMsg("");
     },
     onError: (error) => {
       console.error("Error scheduling demo:", error);
+      toast.error(error.message || "Failed to schedule demo");
       setErrorMsg("Failed to schedule demo. Please try again.");
     },
   });
@@ -39,9 +42,8 @@ const PostDemoSchedules = ({ isOpen, onClose, requestId, theme }) => {
         initial={{ scale: 0.8, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         exit={{ scale: 0.8, opacity: 0 }}
-        className={`w-full max-w-md rounded-xl p-6 shadow-2xl transition ${
-          theme === "light" ? "bg-white text-gray-900" : "bg-gray-900 text-gray-100"
-        }`}
+        className={`w-full max-w-md rounded-xl p-6 shadow-2xl transition ${theme === "light" ? "bg-white text-gray-900" : "bg-gray-900 text-gray-100"
+          }`}
       >
         <h2 className={`text-2xl font-bold mb-4 text-center ${theme === "light" ? "text-orange-600" : "text-orange-400"}`}>
           Schedule Demo
@@ -55,9 +57,8 @@ const PostDemoSchedules = ({ isOpen, onClose, requestId, theme }) => {
               value={scheduledDate}
               onChange={(e) => setScheduledDate(e.target.value)}
               required
-              className={`mt-1 px-3 py-2 rounded-lg border focus:outline-none focus:ring-2 focus:ring-orange-500 transition ${
-                theme === "light" ? "border-orange-300 bg-white text-gray-900" : "border-orange-600 bg-gray-800 text-white"
-              }`}
+              className={`mt-1 px-3 py-2 rounded-lg border focus:outline-none focus:ring-2 focus:ring-orange-500 transition ${theme === "light" ? "border-orange-300 bg-white text-gray-900" : "border-orange-600 bg-gray-800 text-white"
+                }`}
             />
           </label>
 
@@ -67,20 +68,18 @@ const PostDemoSchedules = ({ isOpen, onClose, requestId, theme }) => {
             <button
               type="submit"
               disabled={mutation.isLoading}
-              className={`flex-1 px-4 py-2 rounded-lg font-semibold text-white transition ${
-                theme === "light"
-                  ? "bg-orange-500 hover:bg-orange-600 disabled:bg-orange-300"
-                  : "bg-orange-400 hover:bg-orange-500 disabled:bg-orange-600"
-              }`}
+              className={`flex-1 px-4 py-2 rounded-lg font-semibold text-white transition ${theme === "light"
+                ? "bg-orange-500 hover:bg-orange-600 disabled:bg-orange-300"
+                : "bg-orange-400 hover:bg-orange-500 disabled:bg-orange-600"
+                }`}
             >
               {mutation.isLoading ? "Scheduling..." : "Schedule"}
             </button>
             <button
               type="button"
               onClick={onClose}
-              className={`flex-1 px-4 py-2 rounded-lg font-semibold text-white transition ${
-                theme === "light" ? "bg-gray-400 hover:bg-gray-500" : "bg-gray-700 hover:bg-gray-600"
-              }`}
+              className={`flex-1 px-4 py-2 rounded-lg font-semibold text-white transition ${theme === "light" ? "bg-gray-400 hover:bg-gray-500" : "bg-gray-700 hover:bg-gray-600"
+                }`}
             >
               Cancel
             </button>

@@ -5,6 +5,7 @@ import { useMutation } from "@tanstack/react-query";
 import { resetPasswordApi } from "../apis/authApi";
 import { useTheme } from "../context/ThemeProvider";
 import { Link, useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 const ResetPassword = () => {
   const { theme } = useTheme();
@@ -17,10 +18,10 @@ const ResetPassword = () => {
   const mutation = useMutation({
     mutationFn: () => resetPasswordApi(formData.otp, formData.newPassword),
     onSuccess: (data) => {
-      alert(data.message || "Password reset successful");
+      toast.success(data.message || "Password reset successful");
       navigate("/login");
     },
-    onError: (err) => alert(err.message || "Reset password failed"),
+    onError: (err) => toast.error(err.message || "Reset password failed"),
   });
 
   const handleSubmit = (e) => {
@@ -51,11 +52,10 @@ const ResetPassword = () => {
         className={`w-full max-w-md p-8 rounded-2xl shadow-2xl text-center transition-colors duration-500 ${cardStyle}`}
       >
         <h2
-          className={`text-3xl font-extrabold mb-4 ${
-            isLight
+          className={`text-3xl font-extrabold mb-4 ${isLight
               ? "text-orange-600"
               : "bg-gradient-to-r from-orange-400 to-red-500 bg-clip-text text-transparent"
-          }`}
+            }`}
         >
           Reset Password
         </h2>

@@ -10,6 +10,7 @@ import Loader from "../components/UI/Loader";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "../context/ThemeProvider";
+import toast from "react-hot-toast";
 
 const steps = ["Job Details", "User Details", "Address", "Education"];
 
@@ -72,12 +73,12 @@ const StudentJobPost = () => {
   const { mutate, isPending, error } = useMutation({
     mutationFn: postJobApi,
     onSuccess: (data) => {
-      alert("Job posted successfully!");
+      toast.success("Job posted successfully!");
       navigate("/app");
       console.log("Response:", data);
     },
     onError: (err) => {
-      alert(err.response?.data?.message || "Something went wrong");
+      toast.error(err.response?.data?.message || "Something went wrong");
     },
   });
 
@@ -110,10 +111,9 @@ const StudentJobPost = () => {
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.4 }}
         className={`w-full max-w-3xl rounded-2xl shadow-xl p-6 transition-colors duration-300
-          ${
-            theme === "light"
-              ? "bg-white border border-gray-200 text-black"
-              : "bg-[#1e1c2e] border border-gray-700 text-gray-200"
+          ${theme === "light"
+            ? "bg-white border border-gray-200 text-black"
+            : "bg-[#1e1c2e] border border-gray-700 text-gray-200"
           }`}
       >
         {/* 🔹 Step Titles */}
@@ -121,13 +121,12 @@ const StudentJobPost = () => {
           {steps.map((step, index) => (
             <span
               key={index}
-              className={`transition-colors ${
-                currentStep === index + 1
+              className={`transition-colors ${currentStep === index + 1
                   ? "text-orange-500 font-semibold"
                   : theme === "light"
-                  ? "text-gray-500"
-                  : "text-gray-400"
-              }`}
+                    ? "text-gray-500"
+                    : "text-gray-400"
+                }`}
             >
               {step}
             </span>
@@ -164,10 +163,9 @@ const StudentJobPost = () => {
             <button
               onClick={handleBack}
               className={`w-full sm:w-auto px-5 py-2 rounded-lg transition-colors duration-300
-                ${
-                  theme === "light"
-                    ? "bg-gray-700 hover:bg-gray-600 text-white"
-                    : "bg-gray-800 hover:bg-gray-700 text-gray-200"
+                ${theme === "light"
+                  ? "bg-gray-700 hover:bg-gray-600 text-white"
+                  : "bg-gray-800 hover:bg-gray-700 text-gray-200"
                 }`}
             >
               Back

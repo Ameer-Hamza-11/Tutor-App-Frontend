@@ -8,6 +8,7 @@ import { useDispatch } from "react-redux";
 import { setToken, setProfile } from "../../store/slices/authSlice";
 import { setAuthToken } from "../apis/client";
 import { useTheme } from "../context/ThemeProvider";
+import toast from "react-hot-toast";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -27,15 +28,13 @@ const Login = () => {
     mutationFn: () => loginApi(formData),
     onSuccess: (data) => {
       if (!data?.token || !data?.user) return alert("Invalid response from server");
-
+      toast.success("Login Successful");
       dispatch(setToken(data.token));
       setAuthToken(data.token);
       dispatch(setProfile({ user: data.user }));
-
-      alert("Login Successful");
       navigate("/app");
     },
-    onError: (err) => alert(err.message || "Login failed"),
+    onError: (err) => toast.error(err.message || "Login failed"),
   });
 
   const handleSubmit = (e) => {
@@ -110,11 +109,10 @@ const Login = () => {
             whileTap={{ scale: 0.95 }}
             type="submit"
             disabled={mutation.isPending}
-            className={`w-full py-2 mt-4 rounded-lg font-semibold shadow-md text-white ${
-              isLight
-                ? "bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600"
-                : "bg-gradient-to-r from-orange-400 to-orange-600 hover:from-orange-500 hover:to-orange-700"
-            }`}
+            className={`w-full py-2 mt-4 rounded-lg font-semibold shadow-md text-white ${isLight
+              ? "bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600"
+              : "bg-gradient-to-r from-orange-400 to-orange-600 hover:from-orange-500 hover:to-orange-700"
+              }`}
           >
             {mutation.isPending ? "Logging in..." : "Login"}
           </motion.button>

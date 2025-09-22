@@ -5,6 +5,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
 import { registerApi } from "../apis/authApi";
 import { useTheme } from "../context/ThemeProvider";
+import toast from "react-hot-toast";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -31,11 +32,11 @@ const Register = () => {
   const mutation = useMutation({
     mutationFn: () => registerApi(formData),
     onSuccess: () => {
-      alert("Registered Successfully");
+      toast.success("Registered Successfully");
       navigate("/verifyOtp");
     },
     onError: (err) => {
-      alert(err.message || "Registration failed");
+      toast.error(err.message || "Registration failed");
     },
   });
 
@@ -70,11 +71,10 @@ const Register = () => {
         className={`w-full max-w-md p-8 rounded-2xl shadow-2xl relative transition-colors duration-500 ${cardStyle}`}
       >
         <h2
-          className={`text-3xl font-extrabold mb-6 text-center ${
-            isLight
+          className={`text-3xl font-extrabold mb-6 text-center ${isLight
               ? "text-orange-600"
               : "bg-gradient-to-r from-orange-400 to-red-500 bg-clip-text text-transparent"
-          }`}
+            }`}
         >
           Create Account
         </h2>
@@ -189,11 +189,10 @@ const Register = () => {
             whileTap={{ scale: 0.95 }}
             type="submit"
             disabled={mutation.isPending}
-            className={`w-full py-2 mt-4 rounded-lg font-semibold shadow-md text-white ${
-              isLight
+            className={`w-full py-2 mt-4 rounded-lg font-semibold shadow-md text-white ${isLight
                 ? "bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600"
                 : "bg-gradient-to-r from-orange-400 to-orange-600 hover:from-orange-500 hover:to-orange-700"
-            }`}
+              }`}
           >
             {mutation.isPending ? "Registering..." : "Register"}
           </motion.button>

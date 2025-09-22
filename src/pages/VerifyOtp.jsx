@@ -4,6 +4,7 @@ import { useMutation } from "@tanstack/react-query";
 import { verifyOtpApi } from "../apis/authApi";
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "../context/ThemeProvider";
+import toast from "react-hot-toast";
 
 const VerifyOtp = () => {
   const [otp, setOtp] = useState(["", "", "", ""]);
@@ -15,11 +16,11 @@ const VerifyOtp = () => {
   const mutation = useMutation({
     mutationFn: (code) => verifyOtpApi(code),
     onSuccess: (data) => {
-      alert(data.message);
+      toast.success(data.message);
       navigate("/login");
     },
     onError: (error) => {
-      alert(error.message || "Verification failed");
+      toast.error(error.message || "Verification failed");
     },
   });
 

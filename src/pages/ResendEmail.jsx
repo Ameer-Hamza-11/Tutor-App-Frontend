@@ -4,6 +4,7 @@ import { useMutation } from "@tanstack/react-query";
 import { resendEmailApi } from "../apis/authApi";
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "../context/ThemeProvider"; // ✅ theme hook
+import toast from "react-hot-toast";
 
 const ResendEmail = () => {
   const [email, setEmail] = useState("");
@@ -14,11 +15,11 @@ const ResendEmail = () => {
   const mutation = useMutation({
     mutationFn: (email) => resendEmailApi(email),
     onSuccess: (data) => {
-      alert(data.message);
-      navigate("/verifyOtp"); // ✅ redirect to OTP page
+      toast.success(data.message);
+      navigate("/verifyOtp"); 
     },
     onError: (error) => {
-      alert(error.message || "Failed to resend email");
+      toast.error(error.message || "Failed to resend email");
     },
   });
 
@@ -47,11 +48,10 @@ const ResendEmail = () => {
         className={`w-full max-w-md p-8 rounded-2xl shadow-2xl text-center transition-colors duration-500 ${cardStyle}`}
       >
         <h2
-          className={`text-3xl font-extrabold mb-4 ${
-            isLight
+          className={`text-3xl font-extrabold mb-4 ${isLight
               ? "text-orange-600"
               : "bg-gradient-to-r from-orange-400 to-red-500 bg-clip-text text-transparent"
-          }`}
+            }`}
         >
           Resend Verification Email
         </h2>
