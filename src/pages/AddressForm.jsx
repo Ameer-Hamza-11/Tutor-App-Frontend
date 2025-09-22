@@ -23,7 +23,7 @@ const AddressForm = ({ setAddress }) => {
     setAddress(updated);
   };
 
-  // ✅ Handle select change (Country / City)
+  // ✅ Handle select change
   const handleSelect = (name, value) => {
     const updated = { ...form, [name]: value };
     setForm(updated);
@@ -36,19 +36,23 @@ const AddressForm = ({ setAddress }) => {
     queryFn: fetchCities,
   });
 
-  const { data: countries, isLoading: loadingCountries, error: errorCountries } = useQuery({
-    queryKey: ["countries"],
-    queryFn: fetchCountries,
-  });
+  const { data: countries, isLoading: loadingCountries, error: errorCountries } =
+    useQuery({
+      queryKey: ["countries"],
+      queryFn: fetchCountries,
+    });
 
   return (
     <motion.div
       initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
-      className="bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-900 text-white rounded-xl shadow-lg p-6 space-y-6"
+      className="bg-white dark:bg-[#1e1c2e] text-gray-900 dark:text-gray-200 
+                 rounded-xl shadow-lg p-6 space-y-6 border border-gray-200 dark:border-orange-400/20"
     >
-      <h2 className="text-lg sm:text-xl font-semibold text-pink-400">Address</h2>
+      <h2 className="text-lg sm:text-xl font-semibold text-orange-500">
+        Address
+      </h2>
 
       <div className="grid sm:grid-cols-2 gap-4">
         {/* Address Line 1 */}
@@ -57,7 +61,8 @@ const AddressForm = ({ setAddress }) => {
           placeholder="Address Line 1"
           value={form.AddressLine1}
           onChange={handleChange}
-          className="w-full p-3 rounded-lg bg-white/10 border border-gray-600 focus:ring-2 focus:ring-pink-400 outline-none"
+          className="w-full p-3 rounded-lg bg-gray-50 dark:bg-white/10 border border-gray-300 dark:border-gray-600 
+                     focus:ring-2 focus:ring-orange-400 outline-none"
         />
 
         {/* Address Line 2 */}
@@ -66,37 +71,49 @@ const AddressForm = ({ setAddress }) => {
           placeholder="Address Line 2 (optional)"
           value={form.AddressLine2}
           onChange={handleChange}
-          className="w-full p-3 rounded-lg bg-white/10 border border-gray-600 focus:ring-2 focus:ring-pink-400 outline-none"
+          className="w-full p-3 rounded-lg bg-gray-50 dark:bg-white/10 border border-gray-300 dark:border-gray-600 
+                     focus:ring-2 focus:ring-orange-400 outline-none"
         />
 
-        {/* Country Dropdown with Listbox */}
+        {/* Country Dropdown */}
         <div>
-          <label className="block text-sm text-pink-300 mb-1">Select Country</label>
-          {loadingCountries && <p className="text-gray-400">Loading countries...</p>}
-          {errorCountries && <p className="text-red-400">Failed to load countries</p>}
+          <label className="block text-sm text-orange-500 mb-1">
+            Select Country
+          </label>
+          {loadingCountries && (
+            <p className="text-gray-400">Loading countries...</p>
+          )}
+          {errorCountries && (
+            <p className="text-red-500">Failed to load countries</p>
+          )}
 
           <Listbox
             value={form.Country_Id}
             onChange={(value) => handleSelect("Country_Id", value)}
           >
             <div className="relative">
-              <Listbox.Button className="w-full flex justify-between items-center p-3 rounded-lg bg-white/10 border border-gray-600 focus:ring-2 focus:ring-pink-400 cursor-pointer hover:border-pink-400 hover:bg-white/20">
+              <Listbox.Button className="w-full flex justify-between items-center p-3 rounded-lg 
+                                          bg-gray-50 dark:bg-white/10 border border-gray-300 dark:border-gray-600 
+                                          focus:ring-2 focus:ring-orange-400 cursor-pointer hover:border-orange-400">
                 <span>
                   {form.Country_Id
-                    ? countries?.find((c) => c.Country_Id === form.Country_Id)?.Country_Name
+                    ? countries?.find((c) => c.Country_Id === form.Country_Id)
+                        ?.Country_Name
                     : "-- Select Country --"}
                 </span>
-                <ChevronDown className="w-4 h-4 text-pink-300" />
+                <ChevronDown className="w-4 h-4 text-orange-500" />
               </Listbox.Button>
 
-              <Listbox.Options className="absolute mt-1 w-full bg-indigo-800 rounded-lg shadow-lg z-10 max-h-48 overflow-auto">
+              <Listbox.Options className="absolute mt-1 w-full bg-white dark:bg-[#2a273d] rounded-lg shadow-lg z-10 max-h-48 overflow-auto border border-gray-200 dark:border-gray-700">
                 {countries?.map((country) => (
                   <Listbox.Option
                     key={country.Country_Id}
                     value={country.Country_Id}
                     className={({ active }) =>
                       `cursor-pointer px-4 py-2 ${
-                        active ? "bg-pink-600 text-white" : "text-gray-200"
+                        active
+                          ? "bg-orange-500 text-white"
+                          : "text-gray-700 dark:text-gray-200"
                       }`
                     }
                   >
@@ -113,34 +130,38 @@ const AddressForm = ({ setAddress }) => {
           </Listbox>
         </div>
 
-        {/* City Dropdown with Listbox */}
+        {/* City Dropdown */}
         <div>
-          <label className="block text-sm text-pink-300 mb-1">Select City</label>
+          <label className="block text-sm text-orange-500 mb-1">Select City</label>
           {loadingCities && <p className="text-gray-400">Loading cities...</p>}
-          {errorCities && <p className="text-red-400">Failed to load cities</p>}
+          {errorCities && <p className="text-red-500">Failed to load cities</p>}
 
           <Listbox
             value={form.City_Id}
             onChange={(value) => handleSelect("City_Id", value)}
           >
             <div className="relative">
-              <Listbox.Button className="w-full flex justify-between items-center p-3 rounded-lg bg-white/10 border border-gray-600 focus:ring-2 focus:ring-pink-400 cursor-pointer hover:border-pink-400 hover:bg-white/20">
+              <Listbox.Button className="w-full flex justify-between items-center p-3 rounded-lg 
+                                          bg-gray-50 dark:bg-white/10 border border-gray-300 dark:border-gray-600 
+                                          focus:ring-2 focus:ring-orange-400 cursor-pointer hover:border-orange-400">
                 <span>
                   {form.City_Id
                     ? cities?.find((c) => c.City_Id === form.City_Id)?.City_Name
                     : "-- Select City --"}
                 </span>
-                <ChevronDown className="w-4 h-4 text-pink-300" />
+                <ChevronDown className="w-4 h-4 text-orange-500" />
               </Listbox.Button>
 
-              <Listbox.Options className="absolute mt-1 w-full bg-indigo-800 rounded-lg shadow-lg z-10 max-h-48 overflow-auto">
+              <Listbox.Options className="absolute mt-1 w-full bg-white dark:bg-[#2a273d] rounded-lg shadow-lg z-10 max-h-48 overflow-auto border border-gray-200 dark:border-gray-700">
                 {cities?.map((city) => (
                   <Listbox.Option
                     key={city.City_Id}
                     value={city.City_Id}
                     className={({ active }) =>
                       `cursor-pointer px-4 py-2 ${
-                        active ? "bg-pink-600 text-white" : "text-gray-200"
+                        active
+                          ? "bg-orange-500 text-white"
+                          : "text-gray-700 dark:text-gray-200"
                       }`
                     }
                   >
@@ -163,7 +184,8 @@ const AddressForm = ({ setAddress }) => {
           placeholder="Postal Code"
           value={form.Postal_Code}
           onChange={handleChange}
-          className="w-full p-3 rounded-lg bg-white/10 border border-gray-600 focus:ring-2 focus:ring-pink-400 outline-none"
+          className="w-full p-3 rounded-lg bg-gray-50 dark:bg-white/10 border border-gray-300 dark:border-gray-600 
+                     focus:ring-2 focus:ring-orange-400 outline-none"
         />
 
         {/* Latitude */}
@@ -172,7 +194,8 @@ const AddressForm = ({ setAddress }) => {
           placeholder="Latitude"
           value={form.Latitude}
           onChange={handleChange}
-          className="w-full p-3 rounded-lg bg-white/10 border border-gray-600 focus:ring-2 focus:ring-pink-400 outline-none"
+          className="w-full p-3 rounded-lg bg-gray-50 dark:bg-white/10 border border-gray-300 dark:border-gray-600 
+                     focus:ring-2 focus:ring-orange-400 outline-none"
         />
 
         {/* Longitude */}
@@ -181,7 +204,8 @@ const AddressForm = ({ setAddress }) => {
           placeholder="Longitude"
           value={form.Longitude}
           onChange={handleChange}
-          className="w-full p-3 rounded-lg bg-white/10 border border-gray-600 focus:ring-2 focus:ring-pink-400 outline-none"
+          className="w-full p-3 rounded-lg bg-gray-50 dark:bg-white/10 border border-gray-300 dark:border-gray-600 
+                     focus:ring-2 focus:ring-orange-400 outline-none"
         />
       </div>
     </motion.div>

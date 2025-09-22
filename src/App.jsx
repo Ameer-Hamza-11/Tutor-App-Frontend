@@ -110,19 +110,8 @@ const router = createBrowserRouter([
     errorElement: <ErrorPage />,
   },
 
-  {
-    path: "/create-student-profile",
-    element: <StudentJobPost />,
-    errorElement: <ErrorPage />,
-    children: [
-      { path: "job-post-form", element: <JobDetailsForm /> },
-      { path: "user-details-form", element: <UserDetailsForm /> },
-      { path: "address-form", element: <AddressForm /> },
-      { path: "education-form", element: <EducationForm /> },
-    ],
-  },
+ 
 
-  // ✅ App routes (Student/Teacher/Admin allowed)
   {
     path: "/app",
     element: <ProtectedRoute allowedRoles={["Student", "Teacher", "Admin"]} />,
@@ -137,10 +126,23 @@ const router = createBrowserRouter([
           { path: "logout", element: <Logout /> },
           { path: "find-jobs", element: <FindJobs /> },
           { path: "find-jobs/:id", element: <FindJobById /> },
+  
+          // ✅ yahan shift karna hai
+          {
+            path: "create-student-profile",
+            element: <StudentJobPost />,
+            children: [
+              { path: "job-post-form", element: <JobDetailsForm /> },
+              { path: "user-details-form", element: <UserDetailsForm /> },
+              { path: "address-form", element: <AddressForm /> },
+              { path: "education-form", element: <EducationForm /> },
+            ],
+          },
         ],
       },
     ],
   },
+  
 
   {
     path: "/admin",

@@ -5,9 +5,9 @@ import api from "./client";
 
 
 
-export const getJobsApi = async () => {
+export const getJobsApi = async (page = 1, limit = 10) => {
     try {
-        const { data } = await api.get("/api/jobs");
+        const { data } = await api.get(`/api/jobs?page=${page}&limit=${limit}`);
         return data;
     } catch (error) {
         console.log("Error in getJobsApi:", error);

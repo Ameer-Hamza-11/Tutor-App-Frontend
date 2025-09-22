@@ -18,13 +18,11 @@ import { useQuery } from "@tanstack/react-query";
 import { fetchUsers } from "../apis/fetchApi";
 import { getAllDemoSchedules, getAllJobRequestApi } from "../apis/jobrequestsApi";
 
-
 const AdminLayout = () => {
   const [isOpen, setIsOpen] = useState(true);
   const [theme, setTheme] = useState("light");
   const navigate = useNavigate();
 
-  // Sidebar auto-open on desktop
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth >= 768) setIsOpen(true);
@@ -36,17 +34,15 @@ const AdminLayout = () => {
 
   const toggleTheme = () => setTheme(theme === "light" ? "dark" : "light");
 
-  // ✅ Fetching Data with React Query
+  // ✅ React Query Data
   const { data: users = [] } = useQuery({
     queryKey: ["users"],
     queryFn: fetchUsers,
   });
-
   const { data: jobrequests = [] } = useQuery({
     queryKey: ["jobrequests"],
     queryFn: getAllJobRequestApi,
   });
-
   const { data: demoschedules = [] } = useQuery({
     queryKey: ["demoschedules"],
     queryFn: getAllDemoSchedules,
@@ -61,25 +57,27 @@ const AdminLayout = () => {
       : `${btnBase} bg-gray-700 hover:bg-gray-600 text-white`;
   const goHomeStyle =
     theme === "light"
-      ? `${btnBase} bg-blue-500 hover:bg-blue-600 text-white`
-      : `${btnBase} bg-teal-600 hover:bg-teal-700 text-white`;
+      ? `${btnBase} bg-orange-500 hover:bg-orange-600 text-white`
+      : `${btnBase} bg-orange-600 hover:bg-orange-700 text-white`;
 
   return (
     <div
-      className={`flex h-screen ${theme === "light"
-        ? "bg-gray-100 text-gray-900"
-        : "bg-[#0e0c1c] text-gray-200"
-        }`}
+      className={`flex h-screen ${
+        theme === "light"
+          ? "bg-gray-100 text-black"
+          : "bg-gray-900 text-gray-200"
+      }`}
     >
       {/* Sidebar */}
       <motion.aside
         initial={{ x: -250 }}
         animate={{ x: isOpen ? 0 : -250 }}
         transition={{ duration: 0.3 }}
-        className={`${theme === "light"
-          ? "bg-gradient-to-b from-indigo-600 to-purple-600"
-          : "bg-gradient-to-b from-gray-900 to-gray-800"
-          } text-white w-64 flex flex-col shadow-xl fixed h-full z-20`}
+        className={`${
+          theme === "light"
+            ? "bg-orange-500"
+            : "bg-gray-800"
+        } text-white w-64 flex flex-col shadow-xl fixed h-full z-20`}
       >
         <div className="flex items-center justify-between px-6 py-4 border-b border-white/20">
           <h1 className="text-xl font-bold">Admin Panel</h1>
@@ -92,19 +90,34 @@ const AdminLayout = () => {
         </div>
 
         <nav className="flex-1 px-4 py-6 space-y-3">
-          <NavLink to="/admin/dashboard" className="flex items-center gap-3 px-4 py-2 rounded-xl hover:bg-white/20 transition">
+          <NavLink
+            to="/admin/dashboard"
+            className="flex items-center gap-3 px-4 py-2 rounded-xl hover:bg-white/20 transition"
+          >
             <LayoutDashboard size={20} /> Dashboard
           </NavLink>
-          <NavLink to="/admin/requests" className="flex items-center gap-3 px-4 py-2 rounded-xl hover:bg-white/20 transition">
+          <NavLink
+            to="/admin/requests"
+            className="flex items-center gap-3 px-4 py-2 rounded-xl hover:bg-white/20 transition"
+          >
             <ClipboardList size={20} /> Job Requests
           </NavLink>
-          <NavLink to="/admin/demoSchedules" className="flex items-center gap-3 px-4 py-2 rounded-xl hover:bg-white/20 transition">
+          <NavLink
+            to="/admin/demoSchedules"
+            className="flex items-center gap-3 px-4 py-2 rounded-xl hover:bg-white/20 transition"
+          >
             <CalendarDays size={20} /> Demo Schedules
           </NavLink>
-          <NavLink to="/admin/tutorAssignments" className="flex items-center gap-3 px-4 py-2 rounded-xl hover:bg-white/20 transition">
+          <NavLink
+            to="/admin/tutorAssignments"
+            className="flex items-center gap-3 px-4 py-2 rounded-xl hover:bg-white/20 transition"
+          >
             <Users size={20} /> Tutor Assignments
           </NavLink>
-          <NavLink to="/admin/users" className="flex items-center gap-3 px-4 py-2 rounded-xl hover:bg-white/20 transition">
+          <NavLink
+            to="/admin/users"
+            className="flex items-center gap-3 px-4 py-2 rounded-xl hover:bg-white/20 transition"
+          >
             <Users size={20} /> Users
           </NavLink>
         </nav>
@@ -119,10 +132,11 @@ const AdminLayout = () => {
           </button>
           <NavLink
             to="/app/logout"
-            className={`flex items-center gap-3 w-full px-4 py-2 rounded-xl hover:bg-gray-500 transition ${theme === "light"
-              ? "text-gray-900 bg-gray-100 hover:bg-gray-200"
-              : "text-white bg-gray-800 hover:bg-gray-700"
-              }`}
+            className={`flex items-center gap-3 w-full px-4 py-2 rounded-xl hover:bg-gray-500 transition ${
+              theme === "light"
+                ? "text-black bg-gray-100 hover:bg-gray-200"
+                : "text-white bg-gray-700 hover:bg-gray-600"
+            }`}
           >
             <LogOut size={20} /> Logout
           </NavLink>
@@ -133,19 +147,24 @@ const AdminLayout = () => {
       <div className="flex-1 flex flex-col md:ml-64">
         {/* Topbar */}
         <header
-          className={`flex items-center justify-between px-6 py-4 border-b shadow-sm ${theme === "light"
-            ? "bg-white border-gray-200"
-            : "bg-gray-900 border-gray-700"
-            }`}
+          className={`flex items-center justify-between px-6 py-4 border-b shadow-sm ${
+            theme === "light"
+              ? "bg-white border-gray-200"
+              : "bg-gray-800 border-gray-700"
+          }`}
         >
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className="md:hidden p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition"
+            className="md:hidden p-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition"
           >
             <Menu size={22} />
           </button>
 
-          <h2 className={`text-lg font-semibold ${theme === "light" ? "text-gray-900" : "text-white"}`}>
+          <h2
+            className={`text-lg font-semibold ${
+              theme === "light" ? "text-black" : "text-white"
+            }`}
+          >
             Welcome, Admin
           </h2>
 
@@ -159,14 +178,17 @@ const AdminLayout = () => {
         </header>
 
         {/* Page Content */}
-        <main className={`flex-1 overflow-y-auto p-6 ${theme === "light" ? "bg-gray-50" : "bg-[#0e0c1c]"}`}>
+        <main
+          className={`flex-1 overflow-y-auto p-6 ${
+            theme === "light" ? "bg-gray-50" : "bg-gray-900"
+          }`}
+        >
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4 }}
             className="h-full"
           >
-            {/* ✅ Passing data to children */}
             <Outlet context={{ theme, users, jobrequests, demoschedules }} />
           </motion.div>
         </main>

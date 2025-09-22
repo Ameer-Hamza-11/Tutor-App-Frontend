@@ -13,7 +13,7 @@ const EducationForm = ({ setEducationDetails }) => {
   const handleChange = (e) => {
     const updated = { ...education, [e.target.name]: e.target.value };
     setEducation(updated);
-    setEducationDetails([updated]); // 👈 multiple entries ke liye array banega
+    setEducationDetails([updated]); // multiple entries ke liye array
   };
 
   return (
@@ -21,9 +21,10 @@ const EducationForm = ({ setEducationDetails }) => {
       initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
-      className="bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-900 text-white rounded-xl shadow-lg p-6 space-y-6"
+      className="bg-white dark:bg-[#1e1c2e] text-gray-900 dark:text-gray-200 
+                 rounded-xl shadow-lg p-6 space-y-6 border border-gray-200 dark:border-orange-400/20"
     >
-      <h2 className="text-lg sm:text-xl font-semibold text-pink-400">
+      <h2 className="text-lg sm:text-xl font-semibold text-orange-500">
         Education Details
       </h2>
 
@@ -33,14 +34,18 @@ const EducationForm = ({ setEducationDetails }) => {
           placeholder="Degree"
           value={education.Degree}
           onChange={handleChange}
-          className="w-full p-3 rounded-lg bg-white/10 border border-gray-600 focus:ring-2 focus:ring-pink-400 outline-none"
+          className="w-full p-3 rounded-lg bg-gray-50 dark:bg-white/10 
+                     border border-gray-300 dark:border-gray-600 
+                     focus:ring-2 focus:ring-orange-400 outline-none"
         />
         <input
           name="Institution"
           placeholder="Institution"
           value={education.Institution}
           onChange={handleChange}
-          className="w-full p-3 rounded-lg bg-white/10 border border-gray-600 focus:ring-2 focus:ring-pink-400 outline-none"
+          className="w-full p-3 rounded-lg bg-gray-50 dark:bg-white/10 
+                     border border-gray-300 dark:border-gray-600 
+                     focus:ring-2 focus:ring-orange-400 outline-none"
         />
         <input
           type="number"
@@ -48,7 +53,9 @@ const EducationForm = ({ setEducationDetails }) => {
           placeholder="Start Year"
           value={education.Start_Year}
           onChange={handleChange}
-          className="w-full p-3 rounded-lg bg-white/10 border border-gray-600 focus:ring-2 focus:ring-pink-400 outline-none"
+          className="w-full p-3 rounded-lg bg-gray-50 dark:bg-white/10 
+                     border border-gray-300 dark:border-gray-600 
+                     focus:ring-2 focus:ring-orange-400 outline-none"
         />
         <input
           type="number"
@@ -56,14 +63,18 @@ const EducationForm = ({ setEducationDetails }) => {
           placeholder="End Year"
           value={education.End_Year}
           onChange={handleChange}
-          className="w-full p-3 rounded-lg bg-white/10 border border-gray-600 focus:ring-2 focus:ring-pink-400 outline-none"
+          className="w-full p-3 rounded-lg bg-gray-50 dark:bg-white/10 
+                     border border-gray-300 dark:border-gray-600 
+                     focus:ring-2 focus:ring-orange-400 outline-none"
         />
         <input
           name="Grade"
           placeholder="Grade"
           value={education.Grade}
           onChange={handleChange}
-          className="w-full p-3 rounded-lg bg-white/10 border border-gray-600 focus:ring-2 focus:ring-pink-400 outline-none sm:col-span-2"
+          className="w-full p-3 rounded-lg bg-gray-50 dark:bg-white/10 
+                     border border-gray-300 dark:border-gray-600 
+                     focus:ring-2 focus:ring-orange-400 outline-none sm:col-span-2"
         />
       </div>
     </motion.div>

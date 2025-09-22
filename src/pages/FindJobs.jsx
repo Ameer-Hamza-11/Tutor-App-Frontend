@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import { Search } from "lucide-react";
 import { getJobsApi } from "../apis/jobApi";
@@ -13,16 +13,29 @@ const FindJobs = () => {
   const { theme } = useTheme();
   const navigate = useNavigate();
 
-  const { data: jobs = [], isLoading, isError } = useQuery({
+  const {
+    data,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    isLoading,
+    isError,
+  } = useInfiniteQuery({
     queryKey: ["jobs"],
-    queryFn: getJobsApi,
+    queryFn: ({ pageParam = 1 }) => getJobsApi(pageParam, 10),
+    getNextPageParam: (lastPage) =>
+      lastPage.currentPage < lastPage.totalPages
+        ? lastPage.currentPage + 1
+        : undefined,
   });
+
+  const jobs = data?.pages.flatMap((page) => page.data) ?? [];
 
   if (isLoading)
     return (
       <p
         className={`text-center animate-pulse ${
-          theme === "light" ? "text-pink-600" : "text-pink-400"
+          theme === "light" ? "text-orange-600" : "text-orange-400"
         }`}
       >
         Loading jobs...
@@ -45,20 +58,20 @@ const FindJobs = () => {
       className={`p-6 space-y-6 min-h-screen transition-colors duration-300 ${
         theme === "light"
           ? "bg-gray-50 text-gray-900"
-          : "bg-[#0e0c1c] text-gray-200"
+          : "bg-gray-900 text-gray-200"
       }`}
     >
       {/* Search */}
       <div
         className={`flex items-center rounded-xl px-4 py-2 w-full max-w-md mx-auto border transition shadow-md ${
           theme === "light"
-            ? "bg-white border-gray-300 focus-within:shadow-pink-300"
-            : "bg-[#1a172e] border-pink-400/40 focus-within:shadow-pink-500/30"
+            ? "bg-white border-gray-300 focus-within:shadow-orange-200"
+            : "bg-gray-800 border-gray-700 focus-within:shadow-orange-500/30"
         }`}
       >
         <Search
           className={`mr-2 ${
-            theme === "light" ? "text-pink-600" : "text-pink-400"
+            theme === "light" ? "text-orange-600" : "text-orange-400"
           }`}
         />
         <input
@@ -94,21 +107,21 @@ const FindJobs = () => {
               className={`flex items-center gap-4 p-4 rounded-xl border cursor-pointer transition ${
                 theme === "light"
                   ? "bg-white border-gray-200 hover:shadow-md"
-                  : "bg-[#1a172e] border-pink-400/20 hover:border-pink-400/40"
+                  : "bg-gray-800 border-gray-700 hover:border-orange-400/40"
               }`}
             >
               {/* Profile Image */}
               <img
                 src={profilePic}
                 alt="profile"
-                className="w-14 h-14 rounded-full object-cover border-2 border-pink-400"
+                className="w-14 h-14 rounded-full object-cover border-2 border-orange-500"
               />
 
               {/* Job Info */}
               <div>
                 <h3
                   className={`text-lg font-semibold ${
-                    theme === "light" ? "text-pink-600" : "text-pink-400"
+                    theme === "light" ? "text-orange-600" : "text-orange-400"
                   }`}
                 >
                   {job.Title}
@@ -124,6 +137,23 @@ const FindJobs = () => {
             </motion.div>
           );
         })}
+
+        {/* Load More Button */}
+        <button
+          onClick={() => fetchNextPage()}
+          disabled={!hasNextPage || isFetchingNextPage}
+          className={`mt-6 px-4 py-2 rounded-md text-white transition ${
+            !hasNextPage
+              ? "bg-gray-400 cursor-not-allowed"
+              : "bg-orange-600 hover:bg-orange-700"
+          }`}
+        >
+          {isFetchingNextPage
+            ? "Loading more..."
+            : !hasNextPage
+            ? "No more jobs"
+            : "Load More"}
+        </button>
       </div>
     </div>
   );

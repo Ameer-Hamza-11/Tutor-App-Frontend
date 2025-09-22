@@ -113,6 +113,5 @@ export const getTutorAssignmentById = async (id) => {
     } catch (error) {
         console.log("Error in getTutorAssignmentById:", error);
         throw error;
-
     }
 }

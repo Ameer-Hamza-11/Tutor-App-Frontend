@@ -55,9 +55,9 @@ export const fetchCountries = async () => {
 
 
 //? fetch all users
-export const fetchUsers = async () => {
+export const fetchUsers = async (page = 1, limit = 10) => {
     try {
-        const { data } = await api.get("/api/fetchData/users");
+        const { data } = await api.get(`/api/fetchData/users?page=${page}&limit=${limit}`);
         console.log("Fetched users:", data);
         return data;
     } catch (error) {

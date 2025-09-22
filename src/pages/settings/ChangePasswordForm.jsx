@@ -1,121 +1,85 @@
 import React, { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
-import { toast } from "react-hot-toast";
-import { useSelector } from "react-redux";
+import toast from "react-hot-toast";
 import { changePasswordApi } from "../../apis/settingApi";
-import { Eye, EyeOff } from "lucide-react"; // 👁️ icons for show/hide
+import { Eye, EyeOff } from "lucide-react";
 
 const ChangePasswordForm = () => {
-  const user = useSelector((state) => state.auth.user);
+  const [form, setForm] = useState({
+    currentPassword: "",
+    newPassword: "",
+    confirmPassword: "",
+  });
+  const [show, setShow] = useState({
+    current: false,
+    new: false,
+    confirm: false,
+  });
 
-  const [Old_Password, setOld_Password] = useState("");
-  const [New_Password, setNew_Password] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
-
-  // 🔹 Mutation hook
   const mutation = useMutation({
     mutationFn: changePasswordApi,
-    onSuccess: (data) => {
-      toast.success(data.message || "Password updated successfully ✅");
-      setOld_Password("");
-      setNew_Password("");
-      setConfirmPassword("");
-    },
-    onError: (error) => {
-      toast.error(error.message || "Failed to update password ❌");
-    },
+    onSuccess: () => toast.success("Password updated successfully!"),
+    onError: (err) => toast.error(err.message),
   });
+
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    if (!Old_Password || !New_Password || !confirmPassword) {
-      return toast.error("All fields are required");
+    if (form.newPassword !== form.confirmPassword) {
+      toast.error("New passwords do not match!");
+      return;
     }
+    mutation.mutate(form);
+  };
 
-    if (New_Password !== confirmPassword) {
-      return toast.error("New password and confirm password must match");
-    }
-
-    if (!user?.User_Id) {
-      return toast.error("User not found in session");
-    }
-
-    mutation.mutate({
-      UserId: user.User_Id,
-      Old_Password: Old_Password,
-      New_Password: New_Password,
-    });
+  const toggle = (field) => {
+    setShow({ ...show, [field]: !show[field] });
   };
 
   return (
     <form
       onSubmit={handleSubmit}
-      className="space-y-4 bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md"
+      className="bg-white dark:bg-gray-900 p-6 rounded-xl shadow-md border border-gray-200 dark:border-gray-700 space-y-5"
     >
-      <h3 className="text-lg font-semibold">Change Password</h3>
+      <p className="text-gray-600 dark:text-gray-400">
+        Change your login credentials securely.
+      </p>
 
-      {/* Old Password */}
-      <div className="relative">
-        <input
-          type={showPassword ? "text" : "password"}
-          placeholder="Old Password"
-          value={Old_Password}
-          onChange={(e) => setOld_Password(e.target.value)}
-          className="w-full px-4 py-2 border rounded-lg dark:bg-gray-700 dark:text-white"
-        />
-        <button
-          type="button"
-          onClick={() => setShowPassword(!showPassword)}
-          className="absolute right-3 top-2.5 text-gray-500"
-        >
-          {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-        </button>
-      </div>
+      {/* Input Fields */}
+      {[
+        { label: "Current Password", name: "currentPassword", field: "current" },
+        { label: "New Password", name: "newPassword", field: "new" },
+        { label: "Confirm Password", name: "confirmPassword", field: "confirm" },
+      ].map(({ label, name, field }) => (
+        <div key={name} className="relative">
+          <label className="block text-sm font-medium mb-1">{label}</label>
+          <input
+            type={show[field] ? "text" : "password"}
+            name={name}
+            value={form[name]}
+            onChange={handleChange}
+            className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-orange-500 outline-none"
+          />
+          <button
+            type="button"
+            onClick={() => toggle(field)}
+            className="absolute right-3 top-9 text-gray-500 hover:text-orange-600"
+          >
+            {show[field] ? <EyeOff size={18} /> : <Eye size={18} />}
+          </button>
+        </div>
+      ))}
 
-      {/* New Password */}
-      <div className="relative">
-        <input
-          type={showPassword ? "text" : "password"}
-          placeholder="New Password"
-          value={New_Password}
-          onChange={(e) => setNew_Password(e.target.value)}
-          className="w-full px-4 py-2 border rounded-lg dark:bg-gray-700 dark:text-white"
-        />
-        <button
-          type="button"
-          onClick={() => setShowPassword(!showPassword)}
-          className="absolute right-3 top-2.5 text-gray-500"
-        >
-          {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-        </button>
-      </div>
-
-      {/* Confirm Password */}
-      <div className="relative">
-        <input
-          type={showPassword ? "text" : "password"}
-          placeholder="Confirm New Password"
-          value={confirmPassword}
-          onChange={(e) => setConfirmPassword(e.target.value)}
-          className="w-full px-4 py-2 border rounded-lg dark:bg-gray-700 dark:text-white"
-        />
-        <button
-          type="button"
-          onClick={() => setShowPassword(!showPassword)}
-          className="absolute right-3 top-2.5 text-gray-500"
-        >
-          {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-        </button>
-      </div>
-
+      {/* Submit */}
       <button
         type="submit"
         disabled={mutation.isPending}
-        className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50"
+        className="px-5 py-2 bg-orange-600 text-white font-medium rounded-lg hover:bg-orange-700 disabled:opacity-50 transition-all"
       >
-        {mutation.isPending ? "Updating..." : "Update Password"}
+        {mutation.isPending ? "Updating..." : "Change Password"}
       </button>
     </form>
   );

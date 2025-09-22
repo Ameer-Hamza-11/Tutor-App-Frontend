@@ -47,7 +47,7 @@ const Profile = () => {
         <motion.div
           animate={{ rotate: 360 }}
           transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-          className="w-12 h-12 border-4 border-pink-400 border-t-transparent rounded-full"
+          className="w-12 h-12 border-4 border-orange-400 border-t-transparent rounded-full"
         />
       </div>
     );
@@ -72,7 +72,7 @@ const Profile = () => {
       className={`max-w-3xl mx-auto p-6 rounded-xl border shadow-lg mt-8 ${
         theme === "light"
           ? "bg-white border-gray-200 text-gray-900"
-          : "bg-[#1a172e] border-pink-400/20 text-gray-200"
+          : "bg-gray-800 border-gray-700 text-gray-200"
       }`}
     >
       {/* Profile Header */}
@@ -80,18 +80,18 @@ const Profile = () => {
         <img
           src={profilePic}
           alt="profile"
-          className="w-24 h-24 rounded-full object-cover border-2 border-pink-400 shadow-md"
+          className="w-24 h-24 rounded-full object-cover border-2 border-orange-500 shadow-md"
         />
         <div className="text-center sm:text-left">
           <h2
             className={`text-2xl font-bold ${
-              theme === "light" ? "text-pink-600" : "text-pink-400"
+              theme === "light" ? "text-orange-600" : "text-orange-400"
             }`}
           >
             {profile.First_Name} {profile.Last_Name}
           </h2>
-          <p className="flex items-center justify-center sm:justify-start gap-2 text-sm">
-            <Mail size={16} /> {profile.Email}
+          <p className="flex items-center justify-center sm:justify-start gap-2 text-sm text-gray-500 dark:text-gray-400">
+            <Mail size={16} className="text-orange-500" /> {profile.Email}
           </p>
         </div>
       </div>
@@ -101,25 +101,25 @@ const Profile = () => {
         {/* Personal Info */}
         <section>
           <h3 className="text-xl font-semibold flex items-center gap-2 mb-4">
-            <UserCircle size={20} className="text-pink-400" />
+            <UserCircle size={20} className="text-orange-500" />
             Personal Information
           </h3>
           <div className="space-y-3">
             <p className="flex items-center gap-2">
-              <Phone size={18} className="text-pink-400" />
+              <Phone size={18} className="text-orange-500" />
               <span className="font-semibold">Phone:</span>{" "}
               {profile.Phone_Number}
             </p>
             {details?.gender && (
               <p className="flex items-center gap-2">
-                <User size={18} className="text-pink-400" />
+                <User size={18} className="text-orange-500" />
                 <span className="font-semibold">Gender:</span>{" "}
                 {details.gender.Gender_Description}
               </p>
             )}
             {details?.address && (
               <p className="flex items-center gap-2">
-                <MapPin size={18} className="text-pink-400" />
+                <MapPin size={18} className="text-orange-500" />
                 <span className="font-semibold">Address:</span>{" "}
                 {details.address.AddressLine1},{" "}
                 {details.address.city?.City_Name},{" "}
@@ -133,19 +133,23 @@ const Profile = () => {
         {profile.educationdetails?.length > 0 && (
           <section>
             <h3 className="text-xl font-semibold flex items-center gap-2 mb-4">
-              <GraduationCap size={20} className="text-pink-400" />
+              <GraduationCap size={20} className="text-orange-500" />
               Education
             </h3>
             <div className="space-y-3">
               {profile.educationdetails.map((edu, idx) => (
                 <div
                   key={idx}
-                  className="p-3 rounded-lg border border-gray-700/30 bg-gray-900/20"
+                  className={`p-3 rounded-lg border shadow-sm ${
+                    theme === "light"
+                      ? "bg-gray-50 border-gray-200"
+                      : "bg-gray-700 border-gray-600"
+                  }`}
                 >
-                  <p className="font-semibold">{edu.Degree}</p>
+                  <p className="font-semibold text-orange-500">{edu.Degree}</p>
                   <p className="text-sm">{edu.Institution}</p>
                   {edu.Year_Of_Completion && (
-                    <p className="text-xs text-gray-400">
+                    <p className="text-xs text-gray-500 dark:text-gray-400">
                       Completed: {edu.Year_Of_Completion}
                     </p>
                   )}
@@ -159,10 +163,12 @@ const Profile = () => {
         {details?.Description && (
           <section>
             <h3 className="text-xl font-semibold flex items-center gap-2 mb-4">
-              <Briefcase size={20} className="text-pink-400" />
+              <Briefcase size={20} className="text-orange-500" />
               Professional Information
             </h3>
-            <p className="text-sm leading-relaxed">{details.Description}</p>
+            <p className="text-sm leading-relaxed">
+              {details.Description}
+            </p>
           </section>
         )}
       </div>

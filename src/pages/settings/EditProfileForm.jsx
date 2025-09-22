@@ -70,7 +70,7 @@ const EditProfileForm = () => {
   return (
     <form
       onSubmit={handleSubmit}
-      className="space-y-4 bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md"
+      className="space-y-4 bg-white dark:bg-gray-900 p-6 rounded-xl shadow-md border border-gray-200 dark:border-gray-700"
     >
       {/* First Name */}
       <input
@@ -79,7 +79,7 @@ const EditProfileForm = () => {
         value={formData.First_Name}
         onChange={handleChange}
         placeholder="First Name"
-        className="w-full p-2 border rounded-md dark:bg-gray-700"
+        className="w-full p-2 border rounded-md dark:bg-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-orange-500"
       />
 
       {/* Last Name */}
@@ -89,7 +89,7 @@ const EditProfileForm = () => {
         value={formData.Last_Name}
         onChange={handleChange}
         placeholder="Last Name"
-        className="w-full p-2 border rounded-md dark:bg-gray-700"
+        className="w-full p-2 border rounded-md dark:bg-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-orange-500"
       />
 
       {/* Phone Number */}
@@ -99,7 +99,7 @@ const EditProfileForm = () => {
         value={formData.Phone_Number}
         onChange={handleChange}
         placeholder="Phone Number"
-        className="w-full p-2 border rounded-md dark:bg-gray-700"
+        className="w-full p-2 border rounded-md dark:bg-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-orange-500"
       />
 
       {/* Date of Birth */}
@@ -108,7 +108,7 @@ const EditProfileForm = () => {
         name="Date_Of_Birth"
         value={formData.Date_Of_Birth}
         onChange={handleChange}
-        className="w-full p-2 border rounded-md dark:bg-gray-700"
+        className="w-full p-2 border rounded-md dark:bg-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-orange-500"
       />
 
       {/* Gender (Buttons) */}
@@ -120,10 +120,10 @@ const EditProfileForm = () => {
             onClick={() =>
               setFormData((prev) => ({ ...prev, Gender_Id: g.Gender_Id }))
             }
-            className={`px-3 py-1 rounded ${
+            className={`px-3 py-1 rounded transition-all ${
               formData.Gender_Id === g.Gender_Id
-                ? "bg-blue-600 text-white"
-                : "bg-gray-200 dark:bg-gray-700"
+                ? "bg-orange-600 text-white shadow-md"
+                : "bg-gray-200 dark:bg-gray-700 dark:text-white hover:bg-orange-100 dark:hover:bg-gray-600"
             }`}
           >
             {g.Gender_Description}
@@ -136,7 +136,7 @@ const EditProfileForm = () => {
         name="City_Id"
         value={formData.City_Id}
         onChange={handleChange}
-        className="w-full p-2 border rounded-md dark:bg-gray-700"
+        className="w-full p-2 border rounded-md dark:bg-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-orange-500"
       >
         <option value="">Select City</option>
         {cities.map((c) => (
@@ -151,7 +151,7 @@ const EditProfileForm = () => {
         name="Country_Id"
         value={formData.Country_Id}
         onChange={handleChange}
-        className="w-full p-2 border rounded-md dark:bg-gray-700"
+        className="w-full p-2 border rounded-md dark:bg-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-orange-500"
       >
         <option value="">Select Country</option>
         {countries.map((c) => (
@@ -166,7 +166,7 @@ const EditProfileForm = () => {
         type="file"
         name="Profile_Picture"
         onChange={handleChange}
-        className="w-full p-2 border rounded-md dark:bg-gray-700"
+        className="w-full p-2 border rounded-md dark:bg-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-orange-500"
       />
 
       {/* Additional Info */}
@@ -175,7 +175,7 @@ const EditProfileForm = () => {
         value={formData.Additional_Info}
         onChange={handleChange}
         placeholder="Additional Info"
-        className="w-full p-2 border rounded-md dark:bg-gray-700"
+        className="w-full p-2 border rounded-md dark:bg-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-orange-500"
       />
 
       {/* Description */}
@@ -184,7 +184,7 @@ const EditProfileForm = () => {
         value={formData.Description}
         onChange={handleChange}
         placeholder="Description"
-        className="w-full p-2 border rounded-md dark:bg-gray-700"
+        className="w-full p-2 border rounded-md dark:bg-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-orange-500"
       />
 
       {/* Address */}
@@ -194,7 +194,7 @@ const EditProfileForm = () => {
         value={formData.AddressLine1}
         onChange={handleChange}
         placeholder="Address"
-        className="w-full p-2 border rounded-md dark:bg-gray-700"
+        className="w-full p-2 border rounded-md dark:bg-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-orange-500"
       />
 
       {/* Postal Code */}
@@ -204,14 +204,14 @@ const EditProfileForm = () => {
         value={formData.Postal_Code}
         onChange={handleChange}
         placeholder="Postal Code"
-        className="w-full p-2 border rounded-md dark:bg-gray-700"
+        className="w-full p-2 border rounded-md dark:bg-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-orange-500"
       />
 
       {/* Submit Button */}
       <button
         type="submit"
         disabled={mutation.isPending}
-        className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+        className="px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 disabled:opacity-50 transition-all"
       >
         {mutation.isPending ? "Saving..." : "Save Changes"}
       </button>

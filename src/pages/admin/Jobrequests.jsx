@@ -1,6 +1,6 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { Briefcase, User, Calendar, Clock, DollarSign, CheckCircle, Eye } from "lucide-react";
+import { Eye } from "lucide-react";
 import { NavLink, useOutletContext } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { getAllJobRequestApi } from "../../apis/jobrequestsApi";
@@ -15,101 +15,179 @@ const JobRequests = () => {
 
   if (isLoading)
     return (
-      <p className={`text-center py-20 ${theme === "light" ? "text-indigo-600" : "text-indigo-400"}`}>
+      <p
+        className={`text-center py-20 ${theme === "light" ? "text-indigo-600" : "text-indigo-400"
+          }`}
+      >
         Loading job requests...
       </p>
     );
 
   if (isError)
     return (
-      <p className={`text-center py-20 ${theme === "light" ? "text-red-600" : "text-red-400"}`}>
+      <p
+        className={`text-center py-20 ${theme === "light" ? "text-red-600" : "text-red-400"
+          }`}
+      >
         Failed to load job requests ❌
       </p>
     );
 
   return (
     <div className="space-y-8">
-      {/* Header */}
-      <div>
-        <h1 className="text-3xl font-extrabold text-gray-900 dark:text-white">Job Requests</h1>
-        <p className="text-gray-600 dark:text-gray-400">Manage and review student job requests</p>
-      </div>
-
-      {/* Requests Grid */}
-      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {jobRequests?.map((req, index) => (
-          <motion.div
-            key={req.Request_Id}
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4, delay: index * 0.1 }}
-            whileHover={{ scale: 1.03 }}
-            className={`rounded-2xl shadow-xl p-6 border flex flex-col justify-between transition-all duration-300 hover:shadow-2xl ${
-              theme === "light"
-                ? "bg-white border-gray-200 text-gray-800"
-                : "bg-gray-900 border-gray-700 text-gray-300"
-            }`}
-          >
-            {/* Job Title */}
-            <div className="space-y-2">
-              <h2 className="text-xl font-bold flex items-center gap-2">
-                <Briefcase className="w-5 h-5 text-indigo-500" /> {req.job?.Title}
-              </h2>
-              <p className="text-sm">{req.job?.Description}</p>
-            </div>
-
-            {/* Tutor & Student Info */}
-            <div className="mt-4 space-y-2 text-sm">
-              {/* Tutor */}
-              <p className="flex items-center gap-2">
-                <User className="w-4 h-4 text-blue-500" /> Tutor:{" "}
-                {req.tutor?.First_Name} {req.tutor?.Last_Name} ({req.tutor?.Email})
-              </p>
-              {/* Student */}
-              <p className="flex items-center gap-2">
-                <User className="w-4 h-4 text-purple-500" /> Student:{" "}
-                {req.job?.student?.First_Name} {req.job?.student?.Last_Name} ({req.job?.student?.Email})
-              </p>
-              {/* Date & Time */}
-              <p className="flex items-center gap-2">
-                <Calendar className="w-4 h-4 text-green-500" />{" "}
-                {new Date(req.createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
-              </p>
-              <p className="flex items-center gap-2">
-                <Clock className="w-4 h-4 text-yellow-500" />{" "}
-                {new Date(req.createdAt).toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" })}
-              </p>
-              {/* Fee & Duration */}
-              <p className="flex items-center gap-2">
-                <DollarSign className="w-4 h-4 text-green-700" /> Fee: {req.job?.Fee} | Duration: {req.job?.Duration}
-              </p>
-              {/* Status */}
-              <p className="flex items-center gap-2">
-                <CheckCircle
-                  className={`w-4 h-4 ${
-                    req.status?.Description === "Pending" ? "text-yellow-500" : "text-green-500"
-                  }`}
-                />{" "}
-                {req.status?.Description}
-              </p>
-              <p className="flex items-center gap-2 text-xs text-gray-400 dark:text-gray-500">
-                Request ID: {req.Request_Id} | Job ID: {req.job?.Job_Id}
-              </p>
-            </div>
-
-            {/* Action Button */}
-            <div className="mt-6 flex flex-wrap gap-3">
-              <NavLink
-                to={`/admin/request/${req.job?.Job_Id}`}
-                className="flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-xl font-medium shadow-md bg-gradient-to-r from-indigo-500 to-purple-600 text-white hover:opacity-90 transition"
-              >
-                <Eye className="w-4 h-4" /> View Request
-              </NavLink>
-            </div>
-          </motion.div>
-        ))}
-      </div>
+    {/* Header */}
+    <div>
+      <h1 className="text-3xl font-extrabold text-gray-900 dark:text-white">
+        Job Requests
+      </h1>
+      <p className="text-gray-600 dark:text-gray-400">
+        Manage and review student job requests
+      </p>
     </div>
+  
+    {/* Table (Desktop view) */}
+    <div className="overflow-x-auto rounded-xl shadow-lg hidden md:block">
+      <table
+        className={`min-w-full text-sm ${
+          theme === "light" ? "bg-white" : "bg-gray-900"
+        }`}
+      >
+        <thead
+          className={`${
+            theme === "light"
+              ? "bg-gray-100 text-gray-800"
+              : "bg-gray-800 text-gray-200"
+          }`}
+        >
+          <tr>
+            <th className="px-6 py-3 text-left">Job Title</th>
+            <th className="px-6 py-3 text-left">Tutor</th>
+            <th className="px-6 py-3 text-left">Student</th>
+            <th className="px-6 py-3 text-left">Fee</th>
+            <th className="px-6 py-3 text-left">Duration</th>
+            <th className="px-6 py-3 text-left">Date</th>
+            <th className="px-6 py-3 text-left">Status</th>
+            <th className="px-6 py-3 text-center">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {jobRequests?.map((req, index) => (
+            <motion.tr
+              key={req.Request_Id}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3, delay: index * 0.05 }}
+              className={`${
+                theme === "light"
+                  ? "border-b border-gray-200"
+                  : "border-b border-gray-700"
+              }`}
+            >
+              <td className="px-6 py-4 font-medium">{req.job?.Title}</td>
+              <td className="px-6 py-4">
+                {req.tutor?.First_Name} {req.tutor?.Last_Name}
+                <br />
+                <span className="text-xs text-gray-500">{req.tutor?.Email}</span>
+              </td>
+              <td className="px-6 py-4">
+                {req.job?.student?.First_Name} {req.job?.student?.Last_Name}
+                <br />
+                <span className="text-xs text-gray-500">
+                  {req.job?.student?.Email}
+                </span>
+              </td>
+              <td className="px-6 py-4">Rs. {req.job?.Fee}</td>
+              <td className="px-6 py-4">{req.job?.Duration}</td>
+              <td className="px-6 py-4">
+                {new Date(req.createdAt).toLocaleDateString("en-US", {
+                  month: "short",
+                  day: "numeric",
+                  year: "numeric",
+                })}
+              </td>
+              <td className="px-6 py-4">
+                <span
+                  className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                    req.status?.Description === "Pending"
+                      ? "bg-yellow-100 text-yellow-700"
+                      : "bg-green-100 text-green-700"
+                  }`}
+                >
+                  {req.status?.Description}
+                </span>
+              </td>
+              <td className="px-6 py-4 text-center">
+                <NavLink
+                  to={`/admin/request/${req.job?.Job_Id}`}
+                  className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-medium bg-indigo-600 text-white hover:bg-indigo-700 transition"
+                >
+                  <Eye className="w-4 h-4" /> View
+                </NavLink>
+              </td>
+            </motion.tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  
+    {/* Cards (Mobile view) */}
+    <div className="grid gap-4 sm:grid-cols-2 md:hidden">
+      {jobRequests?.map((req, index) => (
+        <motion.div
+          key={req.Request_Id}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3, delay: index * 0.05 }}
+          className={`p-4 rounded-xl shadow-md ${
+            theme === "light"
+              ? "bg-white border border-gray-200"
+              : "bg-gray-900 border border-gray-700"
+          }`}
+        >
+          <h2 className="text-lg font-semibold mb-2">{req.job?.Title}</h2>
+          <p className="text-sm">
+            <span className="font-medium">Tutor:</span>{" "}
+            {req.tutor?.First_Name} {req.tutor?.Last_Name}
+          </p>
+          <p className="text-sm">
+            <span className="font-medium">Student:</span>{" "}
+            {req.job?.student?.First_Name} {req.job?.student?.Last_Name}
+          </p>
+          <p className="text-sm">
+            <span className="font-medium">Fee:</span> Rs. {req.job?.Fee}
+          </p>
+          <p className="text-sm">
+            <span className="font-medium">Duration:</span> {req.job?.Duration}
+          </p>
+          <p className="text-sm">
+            <span className="font-medium">Date:</span>{" "}
+            {new Date(req.createdAt).toLocaleDateString("en-US")}
+          </p>
+          <p className="mt-2">
+            <span
+              className={`px-2 py-1 rounded-full text-xs font-semibold ${
+                req.status?.Description === "Pending"
+                  ? "bg-yellow-100 text-yellow-700"
+                  : "bg-green-100 text-green-700"
+              }`}
+            >
+              {req.status?.Description}
+            </span>
+          </p>
+          <div className="mt-3">
+            <NavLink
+              to={`/admin/request/${req.job?.Job_Id}`}
+              className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-medium bg-indigo-600 text-white hover:bg-indigo-700 transition"
+            >
+              <Eye className="w-4 h-4" /> View
+            </NavLink>
+          </div>
+        </motion.div>
+      ))}
+    </div>
+  </div>
+  
+
   );
 };
 

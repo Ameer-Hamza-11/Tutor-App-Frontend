@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { ClipboardList, User, MapPin, BookOpen } from "lucide-react";
 import { useMutation } from "@tanstack/react-query";
 import { postJobApi } from "../apis/jobApi";
-
 import JobDetailsForm from "./JobDetailsForm";
 import UserDetailsForm from "./UserDetailsForm";
 import AddressForm from "./AddressForm";
@@ -11,19 +9,17 @@ import EducationForm from "./EducationForm";
 import Loader from "../components/UI/Loader";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { useTheme } from "../context/ThemeProvider";
 
-const steps = [
-  { id: 1, title: "Job Details", icon: <ClipboardList size={20} /> },
-  { id: 2, title: "User Details", icon: <User size={20} /> },
-  { id: 3, title: "Address", icon: <MapPin size={20} /> },
-  { id: 4, title: "Education", icon: <BookOpen size={20} /> },
-];
+const steps = ["Job Details", "User Details", "Address", "Education"];
 
 const StudentJobPost = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const user = useSelector((state) => state.auth.user);
   const navigate = useNavigate();
+  const { theme } = useTheme(); // ✅ using global theme
 
+  // 🔹 States
   const [job, setJob] = useState({
     Student_Id: null,
     Subject_Id: "",
@@ -64,14 +60,15 @@ const StudentJobPost = () => {
     }
   }, [user]);
 
+  // 🔹 Navigation
   const handleNext = () => {
     if (currentStep < steps.length) setCurrentStep(currentStep + 1);
   };
-
   const handleBack = () => {
     if (currentStep > 1) setCurrentStep(currentStep - 1);
   };
 
+  // 🔹 Mutation
   const { mutate, isPending, error } = useMutation({
     mutationFn: postJobApi,
     onSuccess: (data) => {
@@ -104,99 +101,96 @@ const StudentJobPost = () => {
     );
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 bg-gray-50 dark:bg-[#0e0c1c] transition-colors duration-300">
-      <div className="w-full max-w-4xl rounded-2xl shadow-2xl p-8 bg-white dark:bg-[#1e1c2e] transition-colors duration-300">
-        {/* Stepper */}
-        <div className="flex flex-col sm:flex-row sm:justify-between mb-10">
+    <div
+      className={`min-h-screen flex items-center justify-center px-4 py-8 transition-colors duration-300
+        ${theme === "light" ? "bg-gray-50" : "bg-[#12101c]"}`}
+    >
+      <motion.div
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.4 }}
+        className={`w-full max-w-3xl rounded-2xl shadow-xl p-6 transition-colors duration-300
+          ${
+            theme === "light"
+              ? "bg-white border border-gray-200 text-black"
+              : "bg-[#1e1c2e] border border-gray-700 text-gray-200"
+          }`}
+      >
+        {/* 🔹 Step Titles */}
+        <div className="flex justify-between mb-6 text-sm sm:text-base font-medium">
           {steps.map((step, index) => (
-            <div key={step.id} className="flex flex-col items-center relative sm:flex-1">
-              {index > 0 && (
-                <>
-                  <div
-                    className={`sm:hidden absolute -top-6 left-1/2 w-0.5 h-6 transform -translate-x-1/2 ${
-                      currentStep > index ? "bg-gradient-to-b from-pink-500 to-purple-600" : "bg-gray-400 dark:bg-gray-600"
-                    }`}
-                  />
-                  <div
-                    className={`hidden sm:block absolute top-5 left-0 w-full h-0.5 ${
-                      currentStep > index ? "bg-gradient-to-r from-pink-500 to-purple-600" : "bg-gray-400 dark:bg-gray-600"
-                    }`}
-                  />
-                </>
-              )}
-              <div
-                className={`p-4 rounded-full transition-transform ${
-                  currentStep === step.id
-                    ? "bg-gradient-to-r from-pink-500 to-purple-600 scale-110"
-                    : "bg-gray-200 dark:bg-[#2a2640]"
-                }`}
-              >
-                {step.icon}
-              </div>
-              <span
-                className={`mt-2 text-sm sm:text-base font-medium ${
-                  currentStep === step.id ? "text-pink-500 dark:text-pink-400" : "text-gray-500 dark:text-gray-400"
-                }`}
-              >
-                {step.title}
-              </span>
-            </div>
+            <span
+              key={index}
+              className={`transition-colors ${
+                currentStep === index + 1
+                  ? "text-orange-500 font-semibold"
+                  : theme === "light"
+                  ? "text-gray-500"
+                  : "text-gray-400"
+              }`}
+            >
+              {step}
+            </span>
           ))}
         </div>
 
-        {/* Animated Forms */}
+        {/* 🔹 Animated Forms */}
         <motion.div
           key={currentStep}
-          initial={{ opacity: 0, x: 50 }}
+          initial={{ opacity: 0, x: 40 }}
           animate={{ opacity: 1, x: 0 }}
-          exit={{ opacity: 0, x: -50 }}
+          exit={{ opacity: 0, x: -40 }}
           transition={{ duration: 0.3 }}
           className="space-y-6"
         >
           {currentStep === 1 && <JobDetailsForm setJob={setJob} />}
           {currentStep === 2 && <UserDetailsForm setUserDetails={setUserDetails} />}
           {currentStep === 3 && <AddressForm setAddress={setAddress} />}
-          {currentStep === 4 && <EducationForm setEducationDetails={setEducationDetails} />}
+          {currentStep === 4 && (
+            <EducationForm setEducationDetails={setEducationDetails} />
+          )}
         </motion.div>
 
-        {/* Navigation Buttons */}
-        <div className="flex flex-col sm:flex-row justify-between mt-10 gap-4">
-          {/* Go Home */}
+        {/* 🔹 Navigation Buttons */}
+        <div className="flex flex-col sm:flex-row justify-between mt-8 gap-4">
           <button
             onClick={() => navigate("/app")}
-            className="w-full sm:w-auto px-5 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white transition-colors duration-300"
+            className="w-full sm:w-auto px-5 py-2 rounded-lg bg-orange-500 hover:bg-orange-600 text-white transition-colors duration-300"
           >
             Go Home
           </button>
 
-          {/* Back */}
           {currentStep > 1 && (
             <button
               onClick={handleBack}
-              className="w-full sm:w-auto px-5 py-2 rounded-lg bg-gray-700 hover:bg-gray-600 text-white dark:bg-gray-800 dark:hover:bg-gray-700 transition-colors duration-300"
+              className={`w-full sm:w-auto px-5 py-2 rounded-lg transition-colors duration-300
+                ${
+                  theme === "light"
+                    ? "bg-gray-700 hover:bg-gray-600 text-white"
+                    : "bg-gray-800 hover:bg-gray-700 text-gray-200"
+                }`}
             >
               Back
             </button>
           )}
 
-          {/* Next / Submit */}
           {currentStep < steps.length ? (
             <button
               onClick={handleNext}
-              className="w-full sm:w-auto px-8 py-2 rounded-lg bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white transition-colors duration-300 shadow-lg"
+              className="w-full sm:w-auto px-6 py-2 rounded-lg bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white transition-colors duration-300 shadow-md"
             >
               Next
             </button>
           ) : (
             <button
               onClick={handleSubmit}
-              className="w-full sm:w-auto px-8 py-2 rounded-lg bg-green-500 hover:bg-green-600 text-white transition-colors duration-300 shadow-lg"
+              className="w-full sm:w-auto px-6 py-2 rounded-lg bg-green-500 hover:bg-green-600 text-white transition-colors duration-300 shadow-md"
             >
               Submit
             </button>
           )}
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 };
