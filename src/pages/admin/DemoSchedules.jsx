@@ -34,14 +34,13 @@ const DemoSchedules = () => {
 
       {/* Header */}
       <div className="text-center">
-        <h1 className="text-3xl font-extrabold text-gray-900 dark:text-white">Demo Schedules</h1>
+        <h1 className={`${theme === "light" ? "text-3xl font-extrabold text-gray-900 " : "text-3xl font-extrabold text-gray-900 dark:text-white"}`}>Demo Schedules</h1>
         <p className="text-gray-600 dark:text-gray-400 mt-1">Scheduled demos with tutors</p>
       </div>
 
       {/* Desktop Table */}
-      <div className={`hidden md:block overflow-x-auto rounded-2xl shadow-lg border ${
-        theme === "light" ? "bg-white border-orange-200" : "bg-gray-900 border-gray-700"
-      }`}>
+      <div className={`hidden md:block overflow-x-auto rounded-2xl shadow-lg border ${theme === "light" ? "bg-white border-orange-200" : "bg-gray-900 border-gray-700"
+        }`}>
         <table className="w-full table-auto text-sm">
           <thead className={`${theme === "light" ? "bg-orange-50 text-orange-800" : "bg-orange-800 text-orange-200"}`}>
             <tr>
@@ -71,16 +70,14 @@ const DemoSchedules = () => {
                   <td className="px-6 py-4">{scheduled.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}</td>
                   <td className="px-6 py-4">{scheduled.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" })}</td>
                   <td className="px-6 py-4">
-                    <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                      demo.DemoStatusDescription === "Scheduled" ? "bg-orange-500 text-white" : "bg-yellow-400 text-black"
-                    }`}>{demo.DemoStatusDescription}</span>
+                    <span className={`px-3 py-1 rounded-full text-xs font-semibold ${demo.DemoStatusDescription === "Scheduled" ? "bg-orange-500 text-white" : "bg-yellow-400 text-black"
+                      }`}>{demo.DemoStatusDescription}</span>
                   </td>
                   <td className="px-6 py-4 text-center">
                     <NavLink
                       to={`/admin/demoSchedules/${demo.Demo_Id}`}
-                      className={`inline-flex items-center gap-2 px-4 py-2 rounded-lg font-semibold text-xs shadow-md transition ${
-                        theme === "light" ? "bg-orange-500 text-white hover:bg-orange-600" : "bg-orange-600 text-white hover:bg-orange-700"
-                      }`}
+                      className={`inline-flex items-center gap-2 px-4 py-2 rounded-lg font-semibold text-xs shadow-md transition ${theme === "light" ? "bg-orange-500 text-white hover:bg-orange-600" : "bg-orange-600 text-white hover:bg-orange-700"
+                        }`}
                     >
                       <Eye className="w-4 h-4" /> View
                     </NavLink>
@@ -103,9 +100,8 @@ const DemoSchedules = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4, delay: index * 0.1 }}
               whileHover={{ scale: 1.03 }}
-              className={`rounded-2xl shadow-xl p-5 border flex flex-col justify-between transition-all duration-300 hover:shadow-2xl ${
-                theme === "light" ? "bg-white border-orange-200" : "bg-gray-900 border-gray-700"
-              }`}
+              className={`rounded-2xl shadow-xl p-5 border flex flex-col justify-between transition-all duration-300 hover:shadow-2xl ${theme === "light" ? "bg-white border-orange-200" : "bg-gray-900 border-gray-700"
+                }`}
             >
               <div className="space-y-2">
                 <h3 className="text-lg font-bold flex items-center gap-2">
@@ -121,17 +117,15 @@ const DemoSchedules = () => {
                 <p className="text-sm flex items-center gap-2">
                   <Clock className="w-4 h-4 text-orange-500" /> {scheduled.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" })}
                 </p>
-                <span className={`px-3 py-1 rounded-full text-xs font-semibold w-max ${
-                  demo.DemoStatusDescription === "Scheduled" ? "bg-orange-500 text-white" : "bg-yellow-400 text-black"
-                }`}>
+                <span className={`px-3 py-1 rounded-full text-xs font-semibold w-max ${demo.DemoStatusDescription === "Scheduled" ? "bg-orange-500 text-white" : "bg-yellow-400 text-black"
+                  }`}>
                   {demo.DemoStatusDescription}
                 </span>
               </div>
               <NavLink
                 to={`/admin/demoSchedules/${demo.Demo_Id}`}
-                className={`mt-4 inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg font-semibold text-sm shadow-md transition ${
-                  theme === "light" ? "bg-orange-500 text-white hover:bg-orange-600" : "bg-orange-600 text-white hover:bg-orange-700"
-                }`}
+                className={`mt-4 inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg font-semibold text-sm shadow-md transition ${theme === "light" ? "bg-orange-500 text-white hover:bg-orange-600" : "bg-orange-600 text-white hover:bg-orange-700"
+                  }`}
               >
                 <Eye className="w-4 h-4" /> View Details
               </NavLink>
