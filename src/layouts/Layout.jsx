@@ -1,6 +1,6 @@
 import React from "react";
 import Navigation from "../components/Navigation";
-import Topbar from "../components/TopBar";
+import Topbar from "../components/Topbar";
 import { Outlet, useLocation } from "react-router-dom";
 import { useTheme } from "../context/ThemeProvider";
 
@@ -9,22 +9,14 @@ const Layout = () => {
   const { theme } = useTheme();
 
   const getPageTitle = () => {
-    switch (location.pathname) {
-      case "/":
-        return "Dashboard";
-      case "/courses":
-        return "Courses";
-      case "/find-tutor":
-        return "Find Tutor";
-      case "/profile":
-        return "Profile";
-      case "/settings":
-        return "Settings";
-        case "/create-student-profile":
-        return "create-student-profile";
-      default:
-        return "";
-    }
+    const path = location.pathname;
+    if (path === "/app" || path === "/app/") return "Dashboard";
+    if (path.startsWith("/app/courses")) return "Courses";
+    if (path.startsWith("/app/find-jobs")) return "Find Jobs";
+    if (path.startsWith("/app/profile")) return "Profile";
+    if (path.startsWith("/app/settings")) return "Settings";
+    if (path.startsWith("/app/create-student-profile")) return "Create Student Profile";
+    return "";
   };
 
   return (
