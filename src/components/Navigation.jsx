@@ -22,20 +22,24 @@ const Navigation = () => {
 
   const isLight = theme === "light";
 
-  let links = [
-    { name: "Dashboard", path: "/app", icon: <Home size={20} /> },
-    { name: "Courses", path: "/app/courses", icon: <BookOpen size={20} /> },
-    { name: "Find Jobs", path: "/app/find-jobs", icon: <Users size={20} />, roles: ["Teacher"] },
-    { name: "Create Student Profile", path: "/app/create-student-profile", icon: <User size={20} />, roles: ["Student"] },
-    { name: "Profile", path: `/app/profile/${user.User_Id}`, icon: <User size={20} /> },
-    { name: "Settings", path: "/app/settings", icon: <Settings size={20} /> },
-    { name: "Admin Panel", path: "/admin", icon: <Users size={20} />, roles: ["Admin"] },
-  ];
-
-  links = links.filter((link) => {
-    if (user.role === "Admin") return true;
-    return !link.roles || link.roles.includes(user.role);
-  });
+  let links = [];
+  if (user?.role === "Admin") {
+    links = [
+      { name: "Dashboard", path: "/app", icon: <Home size={20} /> },
+      { name: "Profile", path: `/app/profile/${user?.User_Id}`, icon: <User size={20} /> },
+      { name: "Settings", path: "/app/settings", icon: <Settings size={20} /> },
+      { name: "Admin Panel", path: "/admin", icon: <Users size={20} /> },
+    ];
+  } else {
+    links = [
+      { name: "Dashboard", path: "/app", icon: <Home size={20} /> },
+      { name: "Courses", path: "/app/courses", icon: <BookOpen size={20} /> },
+      { name: "Find Jobs", path: "/app/find-jobs", icon: <Users size={20} />, roles: ["Teacher"] },
+      { name: "Create Student Profile", path: "/app/create-student-profile", icon: <User size={20} />, roles: ["Student"] },
+      { name: "Profile", path: `/app/profile/${user?.User_Id}`, icon: <User size={20} /> },
+      { name: "Settings", path: "/app/settings", icon: <Settings size={20} /> },
+    ].filter((link) => !link.roles || link.roles.includes(user?.role));
+  }
 
   const sidebarBase = isLight
     ? "bg-orange-50 text-gray-900 border-r border-orange-200"

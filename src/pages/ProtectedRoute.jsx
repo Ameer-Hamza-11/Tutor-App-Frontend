@@ -13,7 +13,9 @@ const ProtectedRoute = ({ allowedRoles }) => {
   console.log("User Role:", user.role);
 
   if (allowedRoles && !allowedRoles.includes(user.role)) {
-    return <Navigate to="/app" replace />; // agar role match nahi karta
+    // Redirect user to their appropriate home based on role
+    const fallbackPath = user.role === "Admin" ? "/admin" : "/app";
+    return <Navigate to={fallbackPath} replace />;
   }
 
   return <Outlet />; // agar role match karta

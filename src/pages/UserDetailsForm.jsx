@@ -1,21 +1,27 @@
-import React, { useState } from "react";
-import { motion } from "framer-motion";
+import React, { useEffect, useMemo, useState } from "react";
+import { motion as Motion } from "framer-motion";
 import { Upload } from "lucide-react";
 import { useSelector } from "react-redux";
 import { fetchGenders } from "../apis/fetchApi";
 import { useQuery } from "@tanstack/react-query";
 
-const UserDetailsForm = ({ setUserDetails }) => {
+const UserDetailsForm = ({ value, setUserDetails, showErrors }) => {
   const user = useSelector((state) => state.auth.user);
 
-  const [form, setForm] = useState({
+  const initial = useMemo(() => ({
     User_Id: user?.User_Id ?? null,
     Date_Of_Birth: "",
     Gender_Id: "",
     Additional_Info: "",
     Description: "",
     Profile_Picture: null,
-  });
+  }), [user?.User_Id]);
+
+  const [form, setForm] = useState(value ?? initial);
+
+  useEffect(() => {
+    if (value) setForm(value);
+  }, [value]);
 
   const handleChange = (e) => {
     const updated = { ...form, [e.target.name]: e.target.value };
@@ -47,12 +53,12 @@ const UserDetailsForm = ({ setUserDetails }) => {
   if (error) return <p className="text-red-500">Failed to load genders</p>;
 
   return (
-    <motion.div
+    <Motion.div
       initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
-      className="bg-white dark:bg-[#1e1c2e] text-gray-900 dark:text-gray-200 
-                 rounded-xl shadow-lg p-6 space-y-6 border border-gray-200 dark:border-orange-400/20"
+      className="bg-white/90 dark:bg-[#1e1c2e]/90 text-gray-900 dark:text-gray-200 
+                 rounded-xl shadow-lg p-4 sm:p-6 space-y-5 border border-gray-200 dark:border-orange-400/20"
     >
       <h2 className="text-lg sm:text-xl font-semibold text-orange-500">
         User Details
@@ -85,13 +91,14 @@ const UserDetailsForm = ({ setUserDetails }) => {
       </div>
 
       {/* DOB Input */}
+      <label className="block text-sm text-gray-600 dark:text-gray-300">Date of Birth</label>
       <input
         type="date"
         name="Date_Of_Birth"
         value={form.Date_Of_Birth}
         onChange={handleChange}
-        className="w-full p-3 rounded-lg bg-gray-50 dark:bg-white/10 border border-gray-300 dark:border-gray-600 
-                   focus:ring-2 focus:ring-orange-400 outline-none"
+        className={`w-full p-3 rounded-lg bg-gray-50 dark:bg-white/10 border border-gray-300 dark:border-gray-600 
+                   focus:ring-2 focus:ring-orange-400 outline-none ${showErrors && !form.Date_Of_Birth ? 'border-red-500 focus:ring-red-400' : ''}`}
       />
 
       {/* Gender Buttons */}
@@ -114,6 +121,9 @@ const UserDetailsForm = ({ setUserDetails }) => {
             </div>
           ))}
         </div>
+        {showErrors && !form.Gender_Id && (
+          <p className="mt-2 text-xs text-red-500">Gender is required.</p>
+        )}
       </div>
 
       {/* Other Inputs */}
@@ -135,7 +145,7 @@ const UserDetailsForm = ({ setUserDetails }) => {
         className="w-full p-3 rounded-lg bg-gray-50 dark:bg-white/10 border border-gray-300 dark:border-gray-600 
                    focus:ring-2 focus:ring-orange-400 outline-none"
       />
-    </motion.div>
+    </Motion.div>
   );
 };
 

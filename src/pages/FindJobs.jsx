@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { motion } from "framer-motion";
+import { motion as Motion } from "framer-motion";
 import { Search } from "lucide-react";
 import { getJobsApi } from "../apis/jobApi";
 import { useTheme } from "../context/ThemeProvider";
@@ -47,11 +47,14 @@ const FindJobs = () => {
       <p className="text-center text-red-500">Failed to load jobs.</p>
     );
 
-  const filteredJobs = jobs.filter(
-    (job) =>
-      job.Title.toLowerCase().includes(search.toLowerCase()) ||
-      job.subject.Subject_Name.toLowerCase().includes(search.toLowerCase())
-  );
+  const filteredJobs = jobs.filter((job) => {
+    const titleHit = job.Title.toLowerCase().includes(search.toLowerCase());
+    const subjects = job.subjects || (job.subject ? [job.subject] : []);
+    const subjHit = subjects.some((s) =>
+      (s?.Subject_Name || "").toLowerCase().includes(search.toLowerCase())
+    );
+    return titleHit || subjHit;
+  });
 
   return (
     <div
@@ -97,7 +100,7 @@ const FindJobs = () => {
             : defaultAvatar;
 
           return (
-            <motion.div
+            <Motion.div
               key={job.Job_Id}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -133,8 +136,23 @@ const FindJobs = () => {
                 >
                   {job.Description}
                 </p>
+                {/* Subjects */}
+                <div className="mt-1 flex flex-wrap gap-2">
+                  {(job.subjects || (job.subject ? [job.subject] : [])).map((s, i) => (
+                    <span
+                      key={`${s?.Subject_Id || i}`}
+                      className={`text-xs px-2 py-0.5 rounded-full ${
+                        theme === 'light'
+                          ? 'bg-orange-100 text-orange-700'
+                          : 'bg-orange-500/20 text-orange-300'
+                      }`}
+                    >
+                      {s?.Subject_Name}
+                    </span>
+                  ))}
+                </div>
               </div>
-            </motion.div>
+            </Motion.div>
           );
         })}
 

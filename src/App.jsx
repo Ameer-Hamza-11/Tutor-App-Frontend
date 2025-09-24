@@ -40,7 +40,7 @@ import ResendEmail from "./pages/ResendEmail";
 
 
 const token = localStorage.getItem("token");
-const user = localStorage.getItem("user");
+// const user = localStorage.getItem("user");
 if (token) {
   setAuthToken(token);
 }
@@ -120,22 +120,40 @@ const router = createBrowserRouter([
         element: <Layout />,
         children: [
           { index: true, element: <Dashboard /> },
-          { path: "courses", element: <Courses /> },
+          // Guard courses for Student and Teacher only
+          {
+            element: <ProtectedRoute allowedRoles={["Student", "Teacher"]} />,
+            children: [
+              { path: "courses", element: <Courses /> },
+            ],
+          },
           { path: "profile/:id", element: <Profile /> },
           { path: "settings", element: <Settings /> },
           { path: "logout", element: <Logout /> },
-          { path: "find-jobs", element: <FindJobs /> },
-          { path: "find-jobs/:id", element: <FindJobById /> },
+          // Guard find-jobs for Teacher only
+          {
+            element: <ProtectedRoute allowedRoles={["Teacher"]} />,
+            children: [
+              { path: "find-jobs", element: <FindJobs /> },
+              { path: "find-jobs/:id", element: <FindJobById /> },
+            ],
+          },
   
           // ✅ yahan shift karna hai
+          // Guard create-student-profile for Student only
           {
-            path: "create-student-profile",
-            element: <StudentJobPost />,
+            element: <ProtectedRoute allowedRoles={["Student"]} />,
             children: [
-              { path: "job-post-form", element: <JobDetailsForm /> },
-              { path: "user-details-form", element: <UserDetailsForm /> },
-              { path: "address-form", element: <AddressForm /> },
-              { path: "education-form", element: <EducationForm /> },
+              {
+                path: "create-student-profile",
+                element: <StudentJobPost />,
+                children: [
+                  { path: "job-post-form", element: <JobDetailsForm /> },
+                  { path: "user-details-form", element: <UserDetailsForm /> },
+                  { path: "address-form", element: <AddressForm /> },
+                  { path: "education-form", element: <EducationForm /> },
+                ],
+              },
             ],
           },
         ],

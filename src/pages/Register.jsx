@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { motion } from "framer-motion";
+import React, { useEffect, useMemo, useState } from "react";
+import { motion as Motion } from "framer-motion";
 import { User, Mail, Phone, Lock, Eye, EyeOff } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
@@ -21,6 +21,15 @@ const Register = () => {
     Password: "",
     Role_Id: localStorage.getItem("Role_Id") || "",
   });
+  const roleId = useMemo(() => localStorage.getItem("Role_Id") || "", []);
+
+  useEffect(() => {
+    // If the role is not selected, send the user to the Role page first
+    if (!roleId) {
+      navigate("/");
+    }
+  }, [roleId, navigate]);
+
 
   const [showPassword, setShowPassword] = useState(false);
 
@@ -64,7 +73,7 @@ const Register = () => {
     <div
       className={`flex items-center justify-center min-h-screen px-4 transition-colors duration-500 ${bgGradient}`}
     >
-      <motion.div
+      <Motion.div
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.5 }}
@@ -78,6 +87,22 @@ const Register = () => {
         >
           Create Account
         </h2>
+
+        {!roleId && (
+          <Motion.button
+            whileHover={{ scale: 1.03 }}
+            whileTap={{ scale: 0.97 }}
+            type="button"
+            onClick={() => navigate("/")}
+            className={`w-full mb-4 px-4 py-2 rounded-lg font-medium transition-colors border ${
+              isLight
+                ? "border-orange-300 text-orange-600 hover:bg-orange-50"
+                : "border-orange-500 text-orange-300 hover:bg-orange-500/10"
+            }`}
+          >
+            Select Role
+          </Motion.button>
+        )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* User Name */}
@@ -184,18 +209,18 @@ const Register = () => {
           </div>
 
           {/* Submit Button */}
-          <motion.button
+          <Motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             type="submit"
-            disabled={mutation.isPending}
+            disabled={mutation.isPending || !roleId}
             className={`w-full py-2 mt-4 rounded-lg font-semibold shadow-md text-white ${isLight
                 ? "bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600"
                 : "bg-gradient-to-r from-orange-400 to-orange-600 hover:from-orange-500 hover:to-orange-700"
               }`}
           >
-            {mutation.isPending ? "Registering..." : "Register"}
-          </motion.button>
+            {mutation.isPending ? "Registering..." : (!roleId ? "Select Role to Continue" : "Register")}
+          </Motion.button>
         </form>
 
         <p className="text-center text-sm mt-4">
@@ -207,7 +232,7 @@ const Register = () => {
             Login
           </Link>
         </p>
-      </motion.div>
+      </Motion.div>
     </div>
   );
 };

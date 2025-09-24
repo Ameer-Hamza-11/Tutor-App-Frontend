@@ -1,12 +1,12 @@
-import React, { useState } from "react";
-import { motion } from "framer-motion";
+import React, { useEffect, useMemo, useState } from "react";
+import { motion as Motion } from "framer-motion";
 import { useQuery } from "@tanstack/react-query";
 import { fetchCities, fetchCountries } from "../apis/fetchApi";
 import { Listbox } from "@headlessui/react";
 import { Check, ChevronDown } from "lucide-react";
 
-const AddressForm = ({ setAddress }) => {
-  const [form, setForm] = useState({
+const AddressForm = ({ value, setAddress, showErrors }) => {
+  const initial = useMemo(() => ({
     AddressLine1: "",
     AddressLine2: "",
     City_Id: "",
@@ -14,7 +14,13 @@ const AddressForm = ({ setAddress }) => {
     Postal_Code: "",
     Latitude: "",
     Longitude: "",
-  });
+  }), []);
+
+  const [form, setForm] = useState(value ?? initial);
+
+  useEffect(() => {
+    if (value) setForm(value);
+  }, [value]);
 
   // ✅ Handle input change
   const handleChange = (e) => {
@@ -43,12 +49,12 @@ const AddressForm = ({ setAddress }) => {
     });
 
   return (
-    <motion.div
+    <Motion.div
       initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
-      className="bg-white dark:bg-[#1e1c2e] text-gray-900 dark:text-gray-200 
-                 rounded-xl shadow-lg p-6 space-y-6 border border-gray-200 dark:border-orange-400/20"
+      className="bg-white/90 dark:bg-[#1e1c2e]/90 text-gray-900 dark:text-gray-200 
+                 rounded-xl shadow-lg p-4 sm:p-6 space-y-5 border border-gray-200 dark:border-orange-400/20"
     >
       <h2 className="text-lg sm:text-xl font-semibold text-orange-500">
         Address
@@ -61,8 +67,8 @@ const AddressForm = ({ setAddress }) => {
           placeholder="Address Line 1"
           value={form.AddressLine1}
           onChange={handleChange}
-          className="w-full p-3 rounded-lg bg-gray-50 dark:bg-white/10 border border-gray-300 dark:border-gray-600 
-                     focus:ring-2 focus:ring-orange-400 outline-none"
+          className={`w-full p-3 rounded-lg bg-gray-50 dark:bg-white/10 border border-gray-300 dark:border-gray-600 
+                     focus:ring-2 focus:ring-orange-400 outline-none ${showErrors && !form.AddressLine1 ? 'border-red-500 focus:ring-red-400' : ''}`}
         />
 
         {/* Address Line 2 */}
@@ -92,9 +98,9 @@ const AddressForm = ({ setAddress }) => {
             onChange={(value) => handleSelect("Country_Id", value)}
           >
             <div className="relative">
-              <Listbox.Button className="w-full flex justify-between items-center p-3 rounded-lg 
+              <Listbox.Button className={`w-full flex justify-between items-center p-3 rounded-lg 
                                           bg-gray-50 dark:bg-white/10 border border-gray-300 dark:border-gray-600 
-                                          focus:ring-2 focus:ring-orange-400 cursor-pointer hover:border-orange-400">
+                                          focus:ring-2 focus:ring-orange-400 cursor-pointer hover:border-orange-400 ${showErrors && !form.Country_Id ? 'border-red-500 focus:ring-red-400' : ''}`}>
                 <span>
                   {form.Country_Id
                     ? countries?.find((c) => c.Country_Id === form.Country_Id)
@@ -141,9 +147,9 @@ const AddressForm = ({ setAddress }) => {
             onChange={(value) => handleSelect("City_Id", value)}
           >
             <div className="relative">
-              <Listbox.Button className="w-full flex justify-between items-center p-3 rounded-lg 
+              <Listbox.Button className={`w-full flex justify-between items-center p-3 rounded-lg 
                                           bg-gray-50 dark:bg-white/10 border border-gray-300 dark:border-gray-600 
-                                          focus:ring-2 focus:ring-orange-400 cursor-pointer hover:border-orange-400">
+                                          focus:ring-2 focus:ring-orange-400 cursor-pointer hover:border-orange-400 ${showErrors && !form.City_Id ? 'border-red-500 focus:ring-red-400' : ''}`}>
                 <span>
                   {form.City_Id
                     ? cities?.find((c) => c.City_Id === form.City_Id)?.City_Name
@@ -184,8 +190,8 @@ const AddressForm = ({ setAddress }) => {
           placeholder="Postal Code"
           value={form.Postal_Code}
           onChange={handleChange}
-          className="w-full p-3 rounded-lg bg-gray-50 dark:bg-white/10 border border-gray-300 dark:border-gray-600 
-                     focus:ring-2 focus:ring-orange-400 outline-none"
+          className={`w-full p-3 rounded-lg bg-gray-50 dark:bg-white/10 border border-gray-300 dark:border-gray-600 
+                     focus:ring-2 focus:ring-orange-400 outline-none ${showErrors && !form.Postal_Code ? 'border-red-500 focus:ring-red-400' : ''}`}
         />
 
         {/* Latitude */}
@@ -208,7 +214,7 @@ const AddressForm = ({ setAddress }) => {
                      focus:ring-2 focus:ring-orange-400 outline-none"
         />
       </div>
-    </motion.div>
+    </Motion.div>
   );
 };
 

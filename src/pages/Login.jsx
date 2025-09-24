@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { motion } from "framer-motion";
+import { motion as Motion } from "framer-motion";
 import { Mail, Lock, Eye, EyeOff } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
@@ -32,7 +32,8 @@ const Login = () => {
       dispatch(setToken(data.token));
       setAuthToken(data.token);
       dispatch(setProfile({ user: data.user }));
-      navigate("/app");
+      const redirectPath = data.user?.role === "Admin" ? "/admin" : "/app";
+      navigate(redirectPath);
     },
     onError: (err) => toast.error(err.message || "Login failed"),
   });
@@ -57,7 +58,7 @@ const Login = () => {
 
   return (
     <div className={`flex items-center justify-center min-h-screen px-4 transition-colors duration-500 ${bgGradient}`}>
-      <motion.div
+      <Motion.div
         initial={{ opacity: 0, y: -50 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
@@ -66,6 +67,8 @@ const Login = () => {
         <h2 className={`text-3xl font-extrabold mb-6 text-center ${isLight ? "text-orange-600" : "bg-gradient-to-r from-orange-400 to-red-500 bg-clip-text text-transparent"}`}>
           Login
         </h2>
+
+        {/* Role selection button removed per requirement */}
 
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Email */}
@@ -104,7 +107,7 @@ const Login = () => {
           </div>
 
           {/* Submit */}
-          <motion.button
+          <Motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             type="submit"
@@ -115,7 +118,7 @@ const Login = () => {
               }`}
           >
             {mutation.isPending ? "Logging in..." : "Login"}
-          </motion.button>
+          </Motion.button>
         </form>
 
         <p className="text-center text-sm mt-4">
@@ -129,7 +132,7 @@ const Login = () => {
             Forgot Password?
           </Link>
         </p>
-      </motion.div>
+      </Motion.div>
     </div>
   );
 };

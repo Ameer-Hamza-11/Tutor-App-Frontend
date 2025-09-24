@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { motion } from "framer-motion";
+import { motion as Motion } from "framer-motion";
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import {
   LayoutDashboard,
@@ -67,7 +67,7 @@ const AdminLayout = () => {
         }`}
     >
       {/* Sidebar */}
-      <motion.aside
+      <Motion.aside
         initial={{ x: -250 }}
         animate={{ x: isOpen ? 0 : -250 }}
         transition={{ duration: 0.3 }}
@@ -124,7 +124,7 @@ const AdminLayout = () => {
           <button onClick={() => navigate(-1)} className={goBackStyle}>
             <ArrowLeft size={18} /> Go Back
           </button>
-          <button onClick={() => navigate("/")} className={goHomeStyle}>
+          <button onClick={() => navigate("/app")} className={goHomeStyle}>
             <Home size={18} /> Go Home
           </button>
           <NavLink
@@ -137,7 +137,7 @@ const AdminLayout = () => {
             <LogOut size={20} /> Logout
           </NavLink>
         </div>
-      </motion.aside>
+      </Motion.aside>
 
       {/* Main Content */}
       <div className="flex-1 flex flex-col md:ml-64">
@@ -176,14 +176,14 @@ const AdminLayout = () => {
           className={`flex-1 overflow-y-auto p-6 ${theme === "light" ? "bg-gray-50" : "bg-gray-900"
             }`}
         >
-          <motion.div
+          <Motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4 }}
             className="h-full"
           >
             <Outlet context={{ theme, users, jobrequests, demoschedules }} />
-          </motion.div>
+          </Motion.div>
         </main>
       </div>
     </div>

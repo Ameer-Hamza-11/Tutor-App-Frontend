@@ -1,5 +1,5 @@
 import React from "react";
-import { motion } from "framer-motion";
+import { motion as Motion } from "framer-motion";
 import { Users, ClipboardList, CalendarDays, DollarSign } from "lucide-react";
 import { useOutletContext } from "react-router-dom";
 
@@ -65,7 +65,7 @@ const AdminDashboard = () => {
       {/* Stats Grid */}
       <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
         {stats?.map((item, index) => (
-          <motion.div
+          <Motion.div
             key={item.id}
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
@@ -100,7 +100,7 @@ const AdminDashboard = () => {
                 {item.value}
               </h2>
             </div>
-          </motion.div>
+          </Motion.div>
         ))}
       </div>
 
@@ -111,7 +111,7 @@ const AdminDashboard = () => {
         </h3>
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {activities.map((activity, index) => (
-            <motion.div
+            <Motion.div
               key={index}
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
@@ -124,7 +124,7 @@ const AdminDashboard = () => {
               }`}
             >
               {activity}
-            </motion.div>
+            </Motion.div>
           ))}
         </div>
       </div>

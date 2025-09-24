@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { motion } from "framer-motion";
+import { motion as Motion } from "framer-motion";
 import { ArrowLeft } from "lucide-react";
 import { getJobApiById } from "../apis/jobApi";
 import { postJobRequestApi } from "../apis/jobrequestsApi";
@@ -53,7 +53,7 @@ const FindJobById = () => {
     : defaultAvatar;
 
   return (
-    <motion.div
+    <Motion.div
       initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
@@ -64,7 +64,7 @@ const FindJobById = () => {
       }`}
     >
       {/* Back Button */}
-      <motion.button
+      <Motion.button
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
         onClick={() => navigate(-1)}
@@ -76,7 +76,7 @@ const FindJobById = () => {
       >
         <ArrowLeft size={18} />
         Back
-      </motion.button>
+      </Motion.button>
 
       {/* Header */}
       <div className="flex items-center gap-4">
@@ -93,7 +93,18 @@ const FindJobById = () => {
           >
             {job.Title}
           </h2>
-          <p className="text-sm">{job.subject?.Subject_Name}</p>
+          <div className="mt-1 flex flex-wrap gap-2">
+            {(job.subjects || (job.subject ? [job.subject] : [])).map((s, i) => (
+              <span
+                key={`${s?.Subject_Id || i}`}
+                className={`text-xs px-2 py-0.5 rounded-full ${
+                  theme === 'light' ? 'bg-orange-100 text-orange-700' : 'bg-orange-500/20 text-orange-300'
+                }`}
+              >
+                {s?.Subject_Name}
+              </span>
+            ))}
+          </div>
         </div>
       </div>
 
@@ -134,7 +145,7 @@ const FindJobById = () => {
       {/* Apply / Request Button */}
       {(user?.role === "Teacher" || user?.role === "Admin") && (
         <div className="mt-6">
-          <motion.button
+          <Motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={handleRequest}
@@ -146,7 +157,7 @@ const FindJobById = () => {
             }`}
           >
             {mutation.isLoading ? "Sending Request..." : "Apply / Request"}
-          </motion.button>
+          </Motion.button>
           {requestStatus && (
             <p
               className={`mt-2 text-sm font-medium ${
@@ -158,7 +169,7 @@ const FindJobById = () => {
           )}
         </div>
       )}
-    </motion.div>
+    </Motion.div>
   );
 };
 
