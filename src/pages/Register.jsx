@@ -19,7 +19,7 @@ const Register = () => {
     Email: "",
     Phone_Number: "",
     Password: "",
-    Role_Id: localStorage.getItem("Role_Id") || "",
+    Role_Id: Number(localStorage.getItem("Role_Id")) || "",
   });
   const roleId = useMemo(() => localStorage.getItem("Role_Id") || "", []);
 
@@ -40,11 +40,13 @@ const Register = () => {
 
   const mutation = useMutation({
     mutationFn: () => registerApi(formData),
-    onSuccess: () => {
+    onSuccess: (data) => {
       toast.success("Registered Successfully");
       navigate("/verifyOtp");
+      console.log("📩 Register Request Data:", data);
     },
-    onError: (err) => {
+    onError: (err,data) => {
+      console.log("📩 Register Request Data:", data);
       toast.error(err.message || "Registration failed");
     },
   });

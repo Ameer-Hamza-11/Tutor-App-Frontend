@@ -18,7 +18,7 @@ const StudentJobPost = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const user = useSelector((state) => state.auth.user);
   const navigate = useNavigate();
-  const { theme } = useTheme(); // ✅ using global theme
+  const { theme } = useTheme(); 
 
   // 🔹 States
   const [job, setJob] = useState({
@@ -59,10 +59,11 @@ const StudentJobPost = () => {
 
   const validateCurrentStep = () => {
     if (currentStep === 1) {
-      const requiredText = ["Title", "Description", "Duration", "Fee", "Frequency"];
-      const okText = requiredText.every((k) => String(job?.[k] ?? "").trim() !== "");
+      // Only validate truly required fields from the model
+      const requiredFields = ["Title", "Fee"];
+      const okRequiredFields = requiredFields.every((k) => String(job?.[k] ?? "").trim() !== "");
       const okSubjects = Array.isArray(job.Subject_Ids) && job.Subject_Ids.length > 0;
-      return okText && okSubjects;
+      return okRequiredFields && okSubjects;
     }
     if (currentStep === 2) {
       const required = ["Date_Of_Birth", "Gender_Id"];
@@ -135,6 +136,8 @@ const StudentJobPost = () => {
     );
 
   return (
+    <div className={theme === "dark" ? "dark" : ""}
+    >
     <div
       className={`min-h-screen flex items-start justify-center px-3 sm:px-4 py-6 sm:py-8 transition-colors duration-300
         ${theme === "light" ? "bg-gray-50" : "bg-[#0f0e17]"}`}
@@ -222,6 +225,7 @@ const StudentJobPost = () => {
           )}
         </div>
       </Motion.div>
+    </div>
     </div>
   );
 };

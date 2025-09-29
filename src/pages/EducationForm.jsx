@@ -1,6 +1,9 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
+import { useTheme } from "../context/ThemeProvider";
 
 const EducationForm = ({ educationDetails, setEducationDetails }) => {
+  const { theme } = useTheme();
+  const isLight = theme === "light";
   const [currentEducation, setCurrentEducation] = useState({
     Degree: "",
     Institution: "",
@@ -8,6 +11,14 @@ const EducationForm = ({ educationDetails, setEducationDetails }) => {
     End_Year: "",
     Grade: "",
   });
+
+  const yearOptions = useMemo(() => {
+    const current = new Date().getFullYear();
+    const start = current - 60;
+    const years = [];
+    for (let y = current; y >= start; y--) years.push(String(y));
+    return years;
+  }, []);
 
   // handle input change
   const handleChange = (e) => {
@@ -66,22 +77,52 @@ const EducationForm = ({ educationDetails, setEducationDetails }) => {
             onChange={handleChange}
             className="w-full p-3 rounded-lg border"
           />
-          <input
-            type="number"
+          <select
             name="Start_Year"
-            placeholder="Start Year"
             value={currentEducation.Start_Year}
             onChange={handleChange}
-            className="w-full p-3 rounded-lg border"
-          />
-          <input
-            type="number"
+            className={`w-full p-3 rounded-lg border focus:outline-none focus:ring-2 transition-colors
+              ${isLight
+                ? "bg-white border-gray-300 text-gray-900 focus:ring-orange-300"
+                : "bg-gray-800 border-gray-700 text-gray-100 focus:ring-orange-500"}
+            `}
+          >
+            <option value="" disabled className={`${isLight ? "text-gray-500" : "text-gray-400"}`}>
+              Select Start Year
+            </option>
+            {yearOptions.map((y) => (
+              <option
+                key={y}
+                value={y}
+                className={`${isLight ? "bg-white text-gray-900" : "bg-gray-800 text-gray-100"}`}
+              >
+                {y}
+              </option>
+            ))}
+          </select>
+          <select
             name="End_Year"
-            placeholder="End Year"
             value={currentEducation.End_Year}
             onChange={handleChange}
-            className="w-full p-3 rounded-lg border"
-          />
+            className={`w-full p-3 rounded-lg border focus:outline-none focus:ring-2 transition-colors
+              ${isLight
+                ? "bg-white border-gray-300 text-gray-900 focus:ring-orange-300"
+                : "bg-gray-800 border-gray-700 text-gray-100 focus:ring-orange-500"}
+            `}
+          >
+            <option value="" disabled className={`${isLight ? "text-gray-500" : "text-gray-400"}`}>
+              Select End Year
+            </option>
+            {yearOptions.map((y) => (
+              <option
+                key={y}
+                value={y}
+                className={`${isLight ? "bg-white text-gray-900" : "bg-gray-800 text-gray-100"}`}
+              >
+                {y}
+              </option>
+            ))}
+          </select>
           <input
             name="Grade"
             placeholder="Grade"

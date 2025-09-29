@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import Layout from "./layouts/Layout";
 import Dashboard from "./pages/Dashboard";
@@ -37,13 +37,17 @@ import UserById from "./pages/admin/UserById";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
 import ResendEmail from "./pages/ResendEmail";
+import { requestFCMToken, messaging } from "./firebase/firebaseConfig";
+import { onMessage } from "firebase/messaging";
+import toast from "react-hot-toast";
 
 
 const token = localStorage.getItem("token");
-// const user = localStorage.getItem("user");
 if (token) {
   setAuthToken(token);
 }
+
+
 
 const router = createBrowserRouter([
   {
@@ -110,7 +114,7 @@ const router = createBrowserRouter([
     errorElement: <ErrorPage />,
   },
 
- 
+
 
   {
     path: "/app",
@@ -138,9 +142,8 @@ const router = createBrowserRouter([
               { path: "find-jobs/:id", element: <FindJobById /> },
             ],
           },
-  
-          // ✅ yahan shift karna hai
-          // Guard create-student-profile for Student only
+
+
           {
             element: <ProtectedRoute allowedRoles={["Student"]} />,
             children: [
@@ -160,7 +163,7 @@ const router = createBrowserRouter([
       },
     ],
   },
-  
+
 
   {
     path: "/admin",
@@ -188,6 +191,53 @@ const router = createBrowserRouter([
 
 
 const App = () => {
+  useEffect(() => {
+    const init = async () => {
+      try {
+        const token = await requestFCMToken();
+        if (token) {
+          localStorage.setItem("fcmToken", token);
+          console.log("User FCM Token:", token);
+        }
+      } catch (error) {
+        console.error("Error requesting FCM token:", error);
+      }
+    };
+
+    init();
+
+    const unsubscribe = onMessage(messaging, async (payload) => {
+      console.log("Message received in foreground: ", payload);
+      const title = payload?.notification?.title || "New Notification";
+      const body = payload?.notification?.body || "You have a new message";
+      toast(title + ": " + body);
+
+      try {
+        if ("Notification" in window) {
+          if (Notification.permission === "default") {
+            await Notification.requestPermission();
+          }
+          if (Notification.permission === "granted") {
+            const reg = await navigator.serviceWorker?.ready;
+            if (reg?.showNotification) {
+              reg.showNotification(title, {
+                body,
+                icon: "/logo192.png",
+                tag: `job_post_${payload?.data?.jobId || "generic"}`,
+                data: payload?.data || {},
+              });
+            }
+          }
+        }
+      } catch (e) {
+        console.warn("Foreground OS notification failed:", e);
+      }
+    });
+
+    return () => {
+      if (typeof unsubscribe === "function") unsubscribe();
+    };
+  }, [])
   return <RouterProvider router={router} />;
 };
 

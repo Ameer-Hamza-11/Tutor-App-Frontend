@@ -72,8 +72,16 @@ const JobDetailsForm = ({ value, setJob, showErrors }) => {
     queryFn: fetchSubjects,
   });
 
-  if (isLoading) return <p className="text-orange-500">Loading subjects...</p>;
-  if (error) return <p className="text-red-500">Failed to load subjects</p>;
+  if (isLoading) return (
+    <p className="text-sm px-3 py-2 rounded-lg bg-orange-500/10 text-orange-600 dark:text-orange-300 border border-orange-200/50 dark:border-orange-400/30">
+      Loading subjects...
+    </p>
+  );
+  if (error) return (
+    <p className="text-sm px-3 py-2 rounded-lg bg-red-500/10 text-red-600 dark:text-red-300 border border-red-200/50 dark:border-red-400/30">
+      Failed to load subjects
+    </p>
+  );
 
   return (
     <form className="space-y-4 p-4 sm:p-6 rounded-xl shadow-lg border transition 
@@ -86,18 +94,18 @@ const JobDetailsForm = ({ value, setJob, showErrors }) => {
         placeholder="Job Title"
         value={formData.Title}
         onChange={handleChange}
-        className={`border p-3 w-full rounded-lg text-sm bg-gray-50 dark:bg-white/10 border-gray-300 dark:border-gray-600 
+        className={`border p-3 w-full rounded-lg text-sm bg-gray-50 dark:bg-white/10 border-gray-300 dark:border-gray-600 placeholder-gray-400 dark:placeholder-gray-500
                focus:ring-2 focus:ring-orange-400 outline-none ${showErrors && !formData.Title ? 'border-red-500 focus:ring-red-400' : ''}`}
       />
 
       {/* Description */}
       <textarea
         name="Description"
-        placeholder="Description"
+        placeholder="Description (Optional)"
         value={formData.Description}
         onChange={handleChange}
-        className={`border p-3 w-full rounded-lg text-sm bg-gray-50 dark:bg-white/10 border-gray-300 dark:border-gray-600 
-               focus:ring-2 focus:ring-orange-400 outline-none ${showErrors && !formData.Description ? 'border-red-500 focus:ring-red-400' : ''}`}
+        className="border p-3 w-full rounded-lg text-sm bg-gray-50 dark:bg-white/10 border-gray-300 dark:border-gray-600 placeholder-gray-400 dark:placeholder-gray-500
+               focus:ring-2 focus:ring-orange-400 outline-none"
       />
 
       {/* Subjects Multi-select Dropdown */}
@@ -159,24 +167,21 @@ const JobDetailsForm = ({ value, setJob, showErrors }) => {
 
       {/* Other Inputs */}
       <div>
-        <label className="block text-sm mb-1 text-gray-600 dark:text-gray-300">Duration</label>
+        <label className="block text-sm mb-1 text-gray-600 dark:text-gray-300">Duration (Optional)</label>
         <div className="grid grid-cols-2 gap-3">
           <input
             type="time"
             value={time.start}
             onChange={(e) => handleTimeChange('start', e.target.value)}
-            className={`border p-3 w-full rounded-lg text-sm bg-gray-50 dark:bg-white/10 border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-orange-400 outline-none ${showErrors && !time.start ? 'border-red-500 focus:ring-red-400' : ''}`}
+            className="border p-3 w-full rounded-lg text-sm bg-gray-50 dark:bg-white/10 border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-orange-400 outline-none"
           />
           <input
             type="time"
             value={time.end}
             onChange={(e) => handleTimeChange('end', e.target.value)}
-            className={`border p-3 w-full rounded-lg text-sm bg-gray-50 dark:bg-white/10 border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-orange-400 outline-none ${showErrors && !time.end ? 'border-red-500 focus:ring-red-400' : ''}`}
+            className="border p-3 w-full rounded-lg text-sm bg-gray-50 dark:bg-white/10 border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-orange-400 outline-none"
           />
         </div>
-        {showErrors && !formData.Duration && (
-          <p className="mt-2 text-xs text-red-500">Duration is required.</p>
-        )}
       </div>
       <input
         type="number"
@@ -184,17 +189,17 @@ const JobDetailsForm = ({ value, setJob, showErrors }) => {
         placeholder="Fee"
         value={formData.Fee}
         onChange={handleChange}
-        className={`border p-3 w-full rounded-lg text-sm bg-gray-50 dark:bg-white/10 border-gray-300 dark:border-gray-600 
+        className={`border p-3 w-full rounded-lg text-sm bg-gray-50 dark:bg-white/10 border-gray-300 dark:border-gray-600 placeholder-gray-400 dark:placeholder-gray-500
                focus:ring-2 focus:ring-orange-400 outline-none ${showErrors && !formData.Fee ? 'border-red-500 focus:ring-red-400' : ''}`}
       />
       <input
         type="text"
         name="Frequency"
-        placeholder="Frequency (e.g. 2 days/week)"
+        placeholder="Frequency (Optional - e.g. 2 days/week)"
         value={formData.Frequency}
         onChange={handleChange}
-        className={`border p-3 w-full rounded-lg text-sm bg-gray-50 dark:bg-white/10 border-gray-300 dark:border-gray-600 
-               focus:ring-2 focus:ring-orange-400 outline-none ${showErrors && !formData.Frequency ? 'border-red-500 focus:ring-red-400' : ''}`}
+        className="border p-3 w-full rounded-lg text-sm bg-gray-50 dark:bg-white/10 border-gray-300 dark:border-gray-600 placeholder-gray-400 dark:placeholder-gray-500
+               focus:ring-2 focus:ring-orange-400 outline-none"
       />
     </form>
   );

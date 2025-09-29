@@ -55,3 +55,7 @@ export const resendEmailApi = async (Email) => {
         throw new Error(error?.response?.data?.message || "Resend email failed");
     }
 }
+
+export const updateFcmTokenApi = async (fcmToken) => {
+    return await api.post("/api/auth/update-fcm-token", { fcmToken });
+  };

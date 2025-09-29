@@ -15,6 +15,10 @@ export const editProfileApi = async (data) => {
     payload.append("City_Id", data.City_Id);
     payload.append("Country_Id", data.Country_Id);
     payload.append("Postal_Code", data.Postal_Code);
+    payload.append("Subject_Id", data.Subject_Id);
+    if (data.Subject_Ids && Array.isArray(data.Subject_Ids)) {
+        payload.append("Subject_Ids", JSON.stringify(data.Subject_Ids));
+    }
 
     if (data.Profile_Picture) {
         payload.append("Profile_Picture", data.Profile_Picture);

@@ -3,12 +3,13 @@ import { motion as Motion } from "framer-motion";
 import { Mail, Lock, Eye, EyeOff } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
-import { loginApi } from "../apis/authApi";
+import { loginApi,updateFcmTokenApi } from "../apis/authApi";
 import { useDispatch } from "react-redux";
 import { setToken, setProfile } from "../../store/slices/authSlice";
 import { setAuthToken } from "../apis/client";
 import { useTheme } from "../context/ThemeProvider";
 import toast from "react-hot-toast";
+import { requestFCMToken } from "../firebase/firebaseConfig";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -26,12 +27,21 @@ const Login = () => {
 
   const mutation = useMutation({
     mutationFn: () => loginApi(formData),
-    onSuccess: (data) => {
+    onSuccess: async (data) => {
       if (!data?.token || !data?.user) return alert("Invalid response from server");
+
       toast.success("Login Successful");
       dispatch(setToken(data.token));
       setAuthToken(data.token);
       dispatch(setProfile({ user: data.user }));
+
+      // ✅ FCM token generate + backend update
+      const fcmToken = await requestFCMToken();
+      if (fcmToken) {
+        await updateFcmTokenApi(fcmToken);
+        localStorage.setItem("fcmToken", fcmToken);
+      }
+
       const redirectPath = data.user?.role === "Admin" ? "/admin" : "/app";
       navigate(redirectPath);
     },

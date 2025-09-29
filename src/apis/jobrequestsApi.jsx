@@ -47,6 +47,8 @@ export const getAllDemoSchedules = async () => {
         return data;
 
     } catch (error) {
+        console.log("Error in getAllDemoSchedules:", error);
+        throw error;
     }
 }
 
