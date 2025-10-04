@@ -1,9 +1,7 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTheme } from "../context/ThemeProvider";
-import EditProfileForm from "./settings/EditProfileForm";
 import ChangeRoleForm from "./settings/ChangeRoleForm";
-import ChangePasswordForm from "./settings/ChangePasswordForm";
 import DangerZone from "./settings/DangerZone";
 
 const Settings = () => {
@@ -17,22 +15,10 @@ const Settings = () => {
 
   const sections = [
     {
-      id: "profile",
-      title: "Edit Profile",
-      desc: "Update your personal details.",
-      form: <EditProfileForm />,
-    },
-    {
       id: "role",
       title: "Change Role",
       desc: "Switch between Student or Tutor role.",
       form: <ChangeRoleForm />,
-    },
-    {
-      id: "password",
-      title: "Change Password",
-      desc: "Update your login credentials securely.",
-      form: <ChangePasswordForm />,
     },
     {
       id: "danger",
@@ -117,7 +103,7 @@ const Settings = () => {
                   exit={{ opacity: 0, height: 0 }}
                   transition={{ duration: 0.4 }}
                   className="mt-4 overflow-hidden"
-                  onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside form
+                  onClick={(e) => e.stopPropagation()}
                 >
                   {section.form}
                 </motion.div>

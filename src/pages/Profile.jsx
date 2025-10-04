@@ -1,7 +1,7 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useQuery } from "@tanstack/react-query";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { getProfileByUserId } from "../apis/jobApi";
 import { setProfile } from "../../store/slices/authSlice";
 import { useTheme } from "../context/ThemeProvider";
@@ -13,7 +13,11 @@ import {
   User,
   Briefcase,
   UserCircle,
+  Edit,
+  Lock
 } from "lucide-react";
+import EditProfileForm from "./settings/EditProfileForm";
+import ChangePasswordForm from "./settings/ChangePasswordForm";
 
 const defaultAvatar = "/images/default-avatar.png";
 
@@ -27,6 +31,9 @@ const Profile = () => {
     queryFn: () => getProfileByUserId(user?.User_Id),
     enabled: !!user?.User_Id,
   });
+
+  const [openModal, setOpenModal] = useState(null);
+  // null | "edit" | "password"
 
   useEffect(() => {
     if (profile) {
@@ -65,114 +72,166 @@ const Profile = () => {
     : defaultAvatar;
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 30 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4 }}
-      className={`max-w-3xl mx-auto p-6 rounded-xl border shadow-lg mt-8 ${
-        theme === "light"
-          ? "bg-white border-gray-200 text-gray-900"
-          : "bg-gray-800 border-gray-700 text-gray-200"
-      }`}
-    >
-      {/* Profile Header */}
-      <div className="flex flex-col sm:flex-row items-center gap-5 border-b pb-5">
-        <img
-          src={profilePic}
-          alt="profile"
-          className="w-24 h-24 rounded-full object-cover border-2 border-orange-500 shadow-md"
-        />
-        <div className="text-center sm:text-left">
-          <h2
-            className={`text-2xl font-bold ${
-              theme === "light" ? "text-orange-600" : "text-orange-400"
-            }`}
-          >
-            {profile.First_Name} {profile.Last_Name}
-          </h2>
-          <p className="flex items-center justify-center sm:justify-start gap-2 text-sm text-gray-500 dark:text-gray-400">
-            <Mail size={16} className="text-orange-500" /> {profile.Email}
-          </p>
-        </div>
-      </div>
-
-      {/* Sections */}
-      <div className="mt-6 space-y-10">
-        {/* Personal Info */}
-        <section>
-          <h3 className="text-xl font-semibold flex items-center gap-2 mb-4">
-            <UserCircle size={20} className="text-orange-500" />
-            Personal Information
-          </h3>
-          <div className="space-y-3">
-            <p className="flex items-center gap-2">
-              <Phone size={18} className="text-orange-500" />
-              <span className="font-semibold">Phone:</span>{" "}
-              {profile.Phone_Number}
+    <>
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4 }}
+        className={`max-w-3xl mx-auto p-6 rounded-xl border shadow-lg mt-8 ${theme === "light"
+            ? "bg-white border-gray-200 text-gray-900"
+            : "bg-gray-800 border-gray-700 text-gray-200"
+          }`}
+      >
+        {/* Profile Header */}
+        <div className="flex flex-col sm:flex-row items-center gap-5 border-b pb-5 relative">
+          <img
+            src={profilePic}
+            alt="profile"
+            className="w-24 h-24 rounded-full object-cover border-2 border-orange-500 shadow-md"
+          />
+          <div className="text-center sm:text-left flex-1">
+            <h2
+              className={`text-2xl font-bold ${theme === "light" ? "text-orange-600" : "text-orange-400"
+                }`}
+            >
+              {profile.First_Name} {profile.Last_Name}
+            </h2>
+            <p className="flex items-center justify-center sm:justify-start gap-2 text-sm text-gray-500 dark:text-gray-400">
+              <Mail size={16} className="text-orange-500" /> {profile.Email}
             </p>
-            {details?.gender && (
-              <p className="flex items-center gap-2">
-                <User size={18} className="text-orange-500" />
-                <span className="font-semibold">Gender:</span>{" "}
-                {details.gender.Gender_Description}
-              </p>
-            )}
-            {details?.address && (
-              <p className="flex items-center gap-2">
-                <MapPin size={18} className="text-orange-500" />
-                <span className="font-semibold">Address:</span>{" "}
-                {details.address.AddressLine1},{" "}
-                {details.address.city?.City_Name},{" "}
-                {details.address.country?.Country_Name}
-              </p>
-            )}
           </div>
-        </section>
 
-        {/* Education */}
-        {profile.educationdetails?.length > 0 && (
+          {/* Action buttons */}
+          <div className="flex gap-3 absolute top-0 right-0 sm:static">
+            <button
+              onClick={() => setOpenModal("edit")}
+              className="p-2 rounded-full bg-orange-100 text-orange-600 hover:bg-orange-200 dark:bg-gray-700 dark:text-orange-400"
+            >
+              <Edit size={18} />
+            </button>
+            <button
+              onClick={() => setOpenModal("password")}
+              className="p-2 rounded-full bg-orange-100 text-orange-600 hover:bg-orange-200 dark:bg-gray-700 dark:text-orange-400"
+            >
+              <Lock size={18} />
+            </button>
+          </div>
+        </div>
+
+        {/* Sections */}
+        <div className="mt-6 space-y-10">
+          {/* Personal Info */}
           <section>
             <h3 className="text-xl font-semibold flex items-center gap-2 mb-4">
-              <GraduationCap size={20} className="text-orange-500" />
-              Education
+              <UserCircle size={20} className="text-orange-500" />
+              Personal Information
             </h3>
             <div className="space-y-3">
-              {profile.educationdetails.map((edu, idx) => (
-                <div
-                  key={idx}
-                  className={`p-3 rounded-lg border shadow-sm ${
-                    theme === "light"
-                      ? "bg-gray-50 border-gray-200"
-                      : "bg-gray-700 border-gray-600"
-                  }`}
-                >
-                  <p className="font-semibold text-orange-500">{edu.Degree}</p>
-                  <p className="text-sm">{edu.Institution}</p>
-                  {edu.Year_Of_Completion && (
-                    <p className="text-xs text-gray-500 dark:text-gray-400">
-                      Completed: {edu.Year_Of_Completion}
-                    </p>
-                  )}
-                </div>
-              ))}
+              <p className="flex items-center gap-2">
+                <Phone size={18} className="text-orange-500" />
+                <span className="font-semibold">Phone:</span>{" "}
+                {profile.Phone_Number}
+              </p>
+              {details?.gender && (
+                <p className="flex items-center gap-2">
+                  <User size={18} className="text-orange-500" />
+                  <span className="font-semibold">Gender:</span>{" "}
+                  {details.gender.Gender_Description}
+                </p>
+              )}
+              {details?.address && (
+                <p className="flex items-center gap-2">
+                  <MapPin size={18} className="text-orange-500" />
+                  <span className="font-semibold">Address:</span>{" "}
+                  {details.address.AddressLine1},{" "}
+                  {details.address.city?.City_Name},{" "}
+                  {details.address.country?.Country_Name}
+                </p>
+              )}
             </div>
           </section>
-        )}
 
-        {/* Professional / About */}
-        {details?.Description && (
-          <section>
-            <h3 className="text-xl font-semibold flex items-center gap-2 mb-4">
-              <Briefcase size={20} className="text-orange-500" />
-              Professional Information
-            </h3>
-            <p className="text-sm leading-relaxed">
-              {details.Description}
-            </p>
-          </section>
+          {/* Education */}
+          {profile.educationdetails?.length > 0 && (
+            <section>
+              <h3 className="text-xl font-semibold flex items-center gap-2 mb-4">
+                <GraduationCap size={20} className="text-orange-500" />
+                Education
+              </h3>
+              <div className="space-y-3">
+                {profile.educationdetails.map((edu, idx) => (
+                  <div
+                    key={idx}
+                    className={`p-3 rounded-lg border shadow-sm ${theme === "light"
+                        ? "bg-gray-50 border-gray-200"
+                        : "bg-gray-700 border-gray-600"
+                      }`}
+                  >
+                    <p className="font-semibold text-orange-500">{edu.Degree}</p>
+                    <p className="text-sm">{edu.Institution}</p>
+                    {edu.Year_Of_Completion && (
+                      <p className="text-xs text-gray-500 dark:text-gray-400">
+                        Completed: {edu.Year_Of_Completion}
+                      </p>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
+
+          {/* Professional / About */}
+          {details?.Description && (
+            <section>
+              <h3 className="text-xl font-semibold flex items-center gap-2 mb-4">
+                <Briefcase size={20} className="text-orange-500" />
+                Professional Information
+              </h3>
+              <p className="text-sm leading-relaxed">
+                {details.Description}
+              </p>
+            </section>
+          )}
+        </div>
+      </motion.div>
+
+      {/* Modals */}
+      <AnimatePresence>
+        {openModal && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/50 flex justify-center items-center z-50"
+            onClick={() => setOpenModal(null)}
+          >
+            <motion.div
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.8, opacity: 0 }}
+              transition={{ duration: 0.3 }}
+              className="bg-white dark:bg-gray-900 p-6 rounded-xl w-full max-w-lg shadow-lg 
+             max-h-[80vh] overflow-y-auto"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="text-lg font-semibold text-orange-600">
+                  {openModal === "edit" ? "Edit Profile" : "Change Password"}
+                </h2>
+                <button
+                  onClick={() => setOpenModal(null)}
+                  className="text-gray-500 hover:text-red-500"
+                >
+                  ✖
+                </button>
+              </div>
+              {openModal === "edit" && <EditProfileForm />}
+              {openModal === "password" && <ChangePasswordForm />}
+            </motion.div>
+          </motion.div>
         )}
-      </div>
-    </motion.div>
+      </AnimatePresence>
+    </>
   );
 };
 
